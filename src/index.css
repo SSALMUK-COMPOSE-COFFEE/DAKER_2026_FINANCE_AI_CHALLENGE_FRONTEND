@@ -1,20 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600&display=swap');
 @import 'tailwindcss';
-
-@theme {
-  --color-page:    #FAFAF9;
-  --color-card:    #FFFFFF;
-  --color-border:  #E4E4E1;
-  --color-navy:    #10233F;
-  --color-blue:    #3D6FA6;
-  --color-sky:     #7FA8C9;
-  --color-warm:    #C77B4E;
-  --color-muted:   rgba(16,35,63,0.45);
-
-  --font-serif: 'Noto Serif KR', Georgia, serif;
-  --font-sans:  'Noto Sans KR', system-ui, sans-serif;
-}
+@import './styles/colors.css';
 
 * {
   scrollbar-width: none;
@@ -24,8 +11,7 @@
 }
 
 body {
-  background: #FAFAF9;
-  color: #10233F;
+  @apply bg-page text-navy;
   font-family: 'Noto Sans KR', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
@@ -52,42 +38,22 @@ body {
 .animate-fade-in-up { animation: fade-in-up 0.5s ease forwards; }
 
 .card {
-  background: #FFFFFF;
-  border-radius: 12px;
-  border: 0.5px solid #E4E4E1;
+  @apply bg-card rounded-xl border-[0.5px] border-border;
 }
 
 .btn-primary {
-  background: #3D6FA6;
-  color: white;
-  border-radius: 8px;
-  padding: 10px 24px;
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.01em;
+  @apply bg-blue text-white rounded-lg py-2.5 px-6 font-sans text-sm font-medium tracking-[0.01em] cursor-pointer border-none;
   transition: background 0.15s ease, transform 0.1s ease;
-  cursor: pointer;
-  border: none;
 }
-.btn-primary:hover  { background: #335f91; transform: translateY(-1px); }
-.btn-primary:disabled { opacity: 0.35; cursor: default; transform: none; }
+.btn-primary:hover     { @apply -translate-y-px; background: #335f91; }
+.btn-primary:disabled  { @apply opacity-35 cursor-default translate-y-0; }
 
 .btn-secondary {
-  background: transparent;
-  color: #10233F;
-  border: 0.5px solid rgba(16,35,63,0.22);
-  border-radius: 8px;
-  padding: 10px 24px;
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: 14px;
-  font-weight: 400;
+  @apply bg-transparent text-navy border-[0.5px] border-navy/22 rounded-lg py-2.5 px-6 font-sans text-sm font-normal cursor-pointer;
   transition: border-color 0.15s, background 0.15s;
-  cursor: pointer;
 }
 .btn-secondary:hover {
-  border-color: rgba(16,35,63,0.42);
-  background: rgba(16,35,63,0.03);
+  @apply border-navy/42 bg-navy/3;
 }
 
 .step-section { animation: fade-in-up 0.4s ease both; }

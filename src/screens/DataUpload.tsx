@@ -1,0 +1,161 @@
+import { useRef, useState } from "react"
+import { getEvidenceChecklist, CAT_LABELS } from "@/data/evidence"
+import type { Answers, EvidenceCategory, UploadedFile } from "@/types"
+
+const CAT_ORDER: EvidenceCategory[] = ["D", "A", "B", "C"]
+
+function priorityClasses(p: string) {
+  if (p === "필수") return "text-blue bg-blue/[10%]"
+  if (p === "권장") return "text-navy/[60%] bg-navy/[8%]"
+  return "text-warm bg-warm/[10%]"
+}
+
+export function DataUpload({ answers, onNext }: { answers: Answers; onNext: () => void }) {
+  const [files, setFiles] = useState<UploadedFile[]>([])
+  const [dragging, setDragging] = useState(false)
+  const [memo, setMemo] = useState("")
+  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({})
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const checklist = getEvidenceChecklist(answers)
+  const mustItems = checklist.filter(c => c.priority === "필수")
+  const checkedMust = mustItems.filter(m => checkedItems[m.id]).length
+  const gaugePercent = mustItems.length > 0 ? Math.round((checkedMust / mustItems.length) * 100) : 0
+  const gaugeReady = gaugePercent >= 75
+
+  const addFile = (name: string) => {
+    setFiles(prev => { if (prev.find(f => f.name === name)) return prev; return [...prev, { name, size: "2.3 MB", status: "loading" }] })
+    setTimeout(() => setFiles(prev => prev.map(f => f.name === name ? { ...f, status: "done" } : f)), 1100)
+  }
+
+  return (
+    <div className="step-section max-w-[700px] mx-auto pt-14 px-12 pb-20">
+      <div className="text-[11px] text-blue font-semibold tracking-[0.1em] mb-2">STEP 2</div>
+      <h1 className="font-serif-kr text-[28px] font-bold text-navy mb-2 tracking-[-0.01em]">
+        소명 자료를 올려주세요
+      </h1>
+      <p className="font-sans-kr text-sm text-navy/[55%] mb-7 leading-[1.7]">
+        진단 결과를 바탕으로 준비하실 자료 목록을 정리했습니다.<br />
+        필수 항목부터 순서대로 업로드하시면 5영업일 심사 트랙에 진입할 수 있어요.
+      </p>
+
+      {/* Completeness gauge */}
+      <div className="card py-4 px-5 mb-6">
+        <div className="flex justify-between items-center mb-2.5">
+          <span className="text-[12.5px] font-semibold text-navy">완결성 게이지</span>
+          <span className={`text-[12.5px] font-bold ${gaugeReady ? "text-blue" : "text-navy/[45%]"}`}>
+            {gaugePercent}% — {gaugePercent >= 100 ? "5영업일 트랙 진입 가능" : gaugeReady ? "거의 준비됐어요" : `필수 ${checkedMust}/${mustItems.length} 확인됨`}
+          </span>
+        </div>
+        <div className="h-1.5 bg-navy/[8%] rounded-[3px] overflow-hidden">
+          <div
+            className={`h-full rounded-[3px] transition-[width] duration-300 ease-in-out ${gaugeReady ? "bg-blue" : "bg-sky"}`}
+            style={{ width: `${gaugePercent}%` }}
+          />
+        </div>
+        {gaugeReady && (
+          <div className="text-[11px] text-blue mt-1.5">
+            금감원 2026.5 표준화 기준 충족 — 충분한 소명자료 제출 시 5영업일 내 심사결과 통보
+          </div>
+        )}
+      </div>
+
+      {/* Evidence checklist by category */}
+      {CAT_ORDER.map(cat => {
+        const items = checklist.filter(c => c.category === cat)
+        if (items.length === 0) return null
+        const catInfo = CAT_LABELS[cat]
+        return (
+          <div key={cat} className="mb-[18px]">
+            <div className="flex items-center gap-2 mb-2.5">
+              <div className="w-[22px] h-[22px] rounded-md bg-blue/[12%] flex items-center justify-center">
+                <span className="text-[10px] font-bold text-blue">{cat}</span>
+              </div>
+              <div>
+                <span className="text-[13px] font-bold text-navy">{catInfo.title}</span>
+                <span className="text-[11.5px] text-navy/[45%] ml-2">{catInfo.desc}</span>
+              </div>
+            </div>
+            <div className="card py-1 px-0">
+              {items.map((item, i) => {
+                const checked = !!checkedItems[item.id]
+                return (
+                  <label
+                    key={item.id}
+                    className={`flex items-start gap-3 py-[11px] px-4 cursor-pointer ${i < items.length - 1 ? "border-b-[0.5px] border-navy/[7%]" : ""}`}
+                  >
+                    <div
+                      onClick={() => setCheckedItems(prev => ({ ...prev, [item.id]: !prev[item.id] }))}
+                      className={`w-[18px] h-[18px] rounded shrink-0 mt-px cursor-pointer flex items-center justify-center ${checked ? "bg-blue" : "border-[1.5px] border-navy/[22%]"}`}
+                    >
+                      {checked && <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5L4 7L8 3" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        <span className={`text-[9.5px] font-bold py-px px-[7px] rounded-[10px] ${priorityClasses(item.priority)}`}>{item.priority}</span>
+                        <span className={`text-[13px] font-medium ${checked ? "text-navy/[35%] line-through" : "text-navy"}`}>{item.label}</span>
+                      </div>
+                      <span className="text-[11.5px] text-navy/[42%]">{item.description}</span>
+                    </div>
+                  </label>
+                )
+              })}
+            </div>
+          </div>
+        )
+      })}
+
+      {/* Drop zone */}
+      <div className="mt-6 mb-4">
+        <div className="text-[13.5px] font-semibold text-navy mb-2">파일 업로드</div>
+        <div
+          onDragOver={e => { e.preventDefault(); setDragging(true) }}
+          onDragLeave={() => setDragging(false)}
+          onDrop={e => { e.preventDefault(); setDragging(false); Array.from(e.dataTransfer.files).forEach(f => addFile(f.name)) }}
+          onClick={() => inputRef.current?.click()}
+          className={`border-[1.5px] border-dashed rounded-xl py-7 px-6 text-center cursor-pointer transition-all duration-150 mb-3.5 ${dragging ? "border-blue bg-blue/[4%]" : "border-navy/[20%] bg-navy/[2%]"}`}
+        >
+          <input ref={inputRef} type="file" multiple className="hidden" onChange={e => Array.from(e.target.files ?? []).forEach(f => addFile(f.name))} />
+          <div className="text-[13px] text-navy font-medium mb-[3px]">파일을 끌어다 놓거나 클릭해서 선택</div>
+          <div className="text-[11.5px] text-navy/[40%]">CSV, XLSX, PDF, JPG, PNG — 파일당 최대 20MB</div>
+        </div>
+
+        {files.length > 0 && (
+          <div className="card py-1 mb-4">
+            {files.map((f, i) => (
+              <div key={i} className={`flex items-center gap-2.5 py-[9px] px-4 ${i < files.length - 1 ? "border-b-[0.5px] border-navy/[7%]" : ""}`}>
+                <div className="flex-1">
+                  <div className="text-[12.5px] font-medium text-navy">{f.name}</div>
+                  <div className="text-[10.5px] text-navy/[40%]">{f.size}</div>
+                </div>
+                {f.status === "loading"
+                  ? <span className="text-[11px] text-blue">업로드 중…</span>
+                  : <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="rgba(61,111,166,0.12)"/><path d="M5 8.2L7 10.2L11 6.2" stroke="#3D6FA6" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                }
+                <button onClick={() => setFiles(prev => prev.filter((_, j) => j !== i))} className="bg-transparent border-none cursor-pointer text-navy/[30%] text-base leading-none">×</button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Freetext memo */}
+      <div className="mb-8">
+        <div className="text-[13.5px] font-semibold text-navy mb-1">직접 전달하고 싶은 내용</div>
+        <div className="text-xs text-navy/[50%] mb-2">파일로 설명하기 어려운 거래 배경, 관계, 당시 상황 등을 자유롭게 적어주세요.</div>
+        <div className="relative">
+          <textarea
+            value={memo}
+            onChange={e => setMemo(e.target.value)}
+            maxLength={800}
+            placeholder="예: 해당 금액은 당근마켓에서 아이패드를 판매하고 받은 대금입니다. 채팅 상대가 '동생 계좌로 보낸다'고 해서 이름이 달랐지만 당시엔 의심하지 않았습니다."
+            className="w-full h-28 pt-[13px] px-4 pb-7 border-[0.5px] border-navy/[18%] rounded-[10px] text-[13px] text-navy bg-white resize-none outline-none leading-[1.7] box-border focus:border-blue/[50%]"
+          />
+          <div className="absolute bottom-[9px] right-3.5 text-[10.5px] text-navy/[30%]">{memo.length} / 800</div>
+        </div>
+      </div>
+
+      <button className="btn-primary text-sm py-[13px] px-8" onClick={onNext}>AI 분석 시작 →</button>
+    </div>
+  )
+}

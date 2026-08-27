@@ -1,0 +1,19 @@
+/*
+ * Single source of truth for the color palette, exposed as Tailwind v4
+ * theme tokens (bg-navy, text-blue/45, border-border, ...). Keep these
+ * hex values in sync with src/styles/colors.ts, which mirrors the same
+ * palette for the handful of places that need a raw JS color string
+ * (e.g. dynamically computed SVG stroke/fill attributes).
+ */
+@theme {
+  --color-page:   #FAFAF9;
+  --color-card:   #FFFFFF;
+  --color-border: #E4E4E1;
+  --color-navy:   #10233F;
+  --color-blue:   #3D6FA6;
+  --color-sky:    #7FA8C9;
+  --color-warm:   #C77B4E;
+
+  --font-serif: 'Noto Serif KR', Georgia, serif;
+  --font-sans:  'Noto Sans KR', system-ui, sans-serif;
+}
