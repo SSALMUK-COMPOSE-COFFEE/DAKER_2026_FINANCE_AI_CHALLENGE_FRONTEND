@@ -30,7 +30,7 @@ export function Landing({ onStart }: { onStart: () => void }) {
           </span>
         </div>
         <div className="flex items-center gap-10">
-          <TransactionGraph width={480} height={240} animated />
+          <TransactionGraph width={320} height={160} animated />
           <div className="min-w-[160px]">
             <div className="mb-[18px]">
               <div className="flex items-center gap-[7px] mb-1.5">

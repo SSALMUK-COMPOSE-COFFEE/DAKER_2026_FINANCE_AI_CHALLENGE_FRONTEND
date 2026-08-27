@@ -56,7 +56,9 @@ export function TransactionGraph({
   animated?: boolean
 }) {
   return (
-    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="overflow-visible">
+    // viewBox stays fixed to the node layout's natural coordinate space (0-520 x 0-260)
+    // so width/height only scale the rendered size — passing a smaller box never clips a node.
+    <svg width={width} height={height} viewBox="0 0 520 260" className="overflow-visible">
       <defs>
         <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
           <path d="M0,0 L0,6 L6,3 z" fill="rgba(16,35,63,0.2)" />
