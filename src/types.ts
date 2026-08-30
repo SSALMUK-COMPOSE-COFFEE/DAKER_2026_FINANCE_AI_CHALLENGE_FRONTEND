@@ -1,8 +1,3 @@
-export interface ChatMsg {
-  role: "user" | "ai"
-  text: string
-}
-
 export interface UploadedFile {
   name: string
   size: string
@@ -19,11 +14,23 @@ export interface Question {
   tag: string
   question: string
   note?: string
-  type: "single" | "multi" | "combo" | "date"
+  type: "single" | "multi" | "date" | "caseDetails"
   options?: QOption[]
-  exitIf?: string
-  outOfScope?: string[]
+  /** Inline, non-blocking warning shown under the options when this value is selected. */
+  warnings?: Record<string, string>
 }
+
+export type Track = "bank" | "police" | "warning" | "civil"
+
+export type Purpose =
+  | "실물중고"
+  | "상품권"
+  | "게임재화"
+  | "팬덤굿즈"
+  | "금귀금속외화"
+  | "암호화폐"
+  | "용역"
+  | "없음"
 
 export type EvidenceCategory = "A" | "B" | "C" | "D"
 export type EvidencePriority = "필수" | "권장" | "가점"
