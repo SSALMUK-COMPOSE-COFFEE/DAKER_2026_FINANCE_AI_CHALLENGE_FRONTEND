@@ -4,7 +4,7 @@ export function SlideIllustration1() {
   return (
     <svg width="100%" height="100%" viewBox="0 0 420 280" fill="none" className="block">
       {/* Before card */}
-      <rect x="28" y="48" width="158" height="188" rx="14" fill="white" stroke="rgba(16,35,63,0.1)" strokeWidth="1" />
+      <rect x="28" y="48" width="158" height="188" rx="14" fill={COLORS.card} stroke="rgba(16,35,63,0.1)" strokeWidth="1" />
       {/* Clock - before (messy, lots of hours) */}
       <circle cx="107" cy="82" r="22" fill="rgba(16,35,63,0.06)" stroke="rgba(16,35,63,0.18)" strokeWidth="1" />
       <line x1="107" y1="82" x2="107" y2="65" stroke="rgba(16,35,63,0.35)" strokeWidth="1.5" strokeLinecap="round" />
@@ -29,7 +29,7 @@ export function SlideIllustration1() {
       <path d="M218 138 L224 144 L218 150" stroke="rgba(61,111,166,0.4)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
 
       {/* After card */}
-      <rect x="234" y="48" width="158" height="188" rx="14" fill="white" stroke="rgba(61,111,166,0.2)" strokeWidth="1" />
+      <rect x="234" y="48" width="158" height="188" rx="14" fill={COLORS.card} stroke="rgba(61,111,166,0.2)" strokeWidth="1" />
       {/* Clock - after (fast) */}
       <circle cx="313" cy="82" r="22" fill="rgba(61,111,166,0.08)" stroke="rgba(61,111,166,0.3)" strokeWidth="1" />
       <line x1="313" y1="82" x2="313" y2="66" stroke={COLORS.blue} strokeWidth="1.5" strokeLinecap="round" />
@@ -57,7 +57,7 @@ export function SlideIllustration2() {
   return (
     <svg width="100%" height="100%" viewBox="0 0 420 280" fill="none" className="block">
       {/* Step 1 - Document */}
-      <rect x="28" y="70" width="90" height="110" rx="10" fill="white" stroke="rgba(16,35,63,0.12)" strokeWidth="1" />
+      <rect x="28" y="70" width="90" height="110" rx="10" fill={COLORS.card} stroke="rgba(16,35,63,0.12)" strokeWidth="1" />
       <rect x="42" y="90" width="62" height="7" rx="2" fill="rgba(16,35,63,0.12)" />
       <rect x="42" y="105" width="50" height="7" rx="2" fill="rgba(16,35,63,0.08)" />
       <rect x="42" y="120" width="58" height="7" rx="2" fill="rgba(16,35,63,0.1)" />
@@ -83,7 +83,7 @@ export function SlideIllustration2() {
       <path d="M258 119 L264 125 L258 131" stroke="rgba(61,111,166,0.35)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
 
       {/* Step 3 - Output doc */}
-      <rect x="270" y="60" width="122" height="130" rx="10" fill="white" stroke="rgba(61,111,166,0.25)" strokeWidth="1" />
+      <rect x="270" y="60" width="122" height="130" rx="10" fill={COLORS.card} stroke="rgba(61,111,166,0.25)" strokeWidth="1" />
       <rect x="284" y="82" width="94" height="8" rx="2" fill="rgba(61,111,166,0.3)" />
       <rect x="284" y="98" width="78" height="7" rx="2" fill="rgba(61,111,166,0.18)" />
       <rect x="284" y="112" width="88" height="7" rx="2" fill="rgba(61,111,166,0.22)" />
@@ -109,14 +109,14 @@ export function SlideIllustration3() {
       <rect x="90" y="130" width="240" height="120" rx="12" fill="rgba(61,111,166,0.18)" />
       <rect x="90" y="118" width="90" height="18" rx="6" fill="rgba(61,111,166,0.18)" />
       {/* Document 1 */}
-      <rect x="80" y="68" width="110" height="140" rx="10" fill="white" stroke="rgba(16,35,63,0.1)" strokeWidth="1" />
+      <rect x="80" y="68" width="110" height="140" rx="10" fill={COLORS.card} stroke="rgba(16,35,63,0.1)" strokeWidth="1" />
       <rect x="94" y="88" width="82" height="7" rx="2" fill="rgba(16,35,63,0.1)" />
       <rect x="94" y="102" width="66" height="7" rx="2" fill="rgba(16,35,63,0.07)" />
       <rect x="94" y="116" width="76" height="7" rx="2" fill="rgba(16,35,63,0.09)" />
       <circle cx="162" cy="76" r="14" fill="rgba(61,111,166,0.15)" />
       <path d="M156 76L160 80L168 72" stroke={COLORS.blue} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
       {/* Document 2 */}
-      <rect x="198" y="56" width="110" height="140" rx="10" fill="white" stroke="rgba(61,111,166,0.2)" strokeWidth="1" />
+      <rect x="198" y="56" width="110" height="140" rx="10" fill={COLORS.card} stroke="rgba(61,111,166,0.2)" strokeWidth="1" />
       <rect x="212" y="76" width="82" height="7" rx="2" fill="rgba(61,111,166,0.2)" />
       <rect x="212" y="90" width="66" height="7" rx="2" fill="rgba(61,111,166,0.14)" />
       <rect x="212" y="104" width="76" height="7" rx="2" fill="rgba(61,111,166,0.18)" />
@@ -125,7 +125,7 @@ export function SlideIllustration3() {
       <circle cx="280" cy="64" r="14" fill={COLORS.blue} />
       <path d="M274 64L278 68L286 60" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
       {/* AI badge */}
-      <rect x="134" y="214" width="152" height="28" rx="14" fill="white" stroke="rgba(61,111,166,0.3)" strokeWidth="0.5" />
+      <rect x="134" y="214" width="152" height="28" rx="14" fill={COLORS.card} stroke="rgba(61,111,166,0.3)" strokeWidth="0.5" />
       <circle cx="151" cy="228" r="8" fill={COLORS.blue} />
       <text x="151" y="232" textAnchor="middle" fontSize="8" fontFamily="'Noto Sans KR', sans-serif" fill="white" fontWeight="700">AI</text>
       <text x="220" y="232" textAnchor="middle" fontSize="11" fontFamily="'Noto Sans KR', sans-serif" fill={COLORS.navy} fontWeight="500">분석 근거 포함 완료</text>
