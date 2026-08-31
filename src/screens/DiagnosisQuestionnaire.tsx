@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { Check, CircleAlert, ArrowRight } from "lucide-react"
 import { QUESTIONS } from "@/data/questions"
 import { getEvidenceChecklist, CAT_LABELS } from "@/data/evidence"
 import type { Answers } from "@/types"
@@ -241,15 +242,7 @@ export function DiagnosisQuestionnaire({
     return (
       <div className="step-section max-w-140 mx-auto py-20 px-12">
         <div className="w-11 h-11 rounded-xl bg-warm/10 border-[0.5px] border-warm/30 flex items-center justify-center mb-4">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path
-              d="M10 6v5M10 14h.01"
-              stroke="#C77B4E"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-            <circle cx="10" cy="10" r="8" stroke="#C77B4E" strokeWidth="1.2" />
-          </svg>
+          <CircleAlert size={20} color="#C77B4E" strokeWidth={1.5} />
         </div>
         <div className="font-serif-kr text-[22px] font-bold text-navy mb-2.5">
           차액을 돌려달라고 하면, 절대 돌려주지 마세요
@@ -285,15 +278,7 @@ export function DiagnosisQuestionnaire({
     return (
       <div className="step-section max-w-140 mx-auto py-20 px-12">
         <div className="w-11 h-11 rounded-xl bg-warm/10 border-[0.5px] border-warm/30 flex items-center justify-center mb-4">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path
-              d="M10 6v5M10 14h.01"
-              stroke="#C77B4E"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-            <circle cx="10" cy="10" r="8" stroke="#C77B4E" strokeWidth="1.2" />
-          </svg>
+          <CircleAlert size={20} color="#C77B4E" strokeWidth={1.5} />
         </div>
         <div className="font-serif-kr text-[22px] font-bold text-navy mb-2.5">
           자동 소명서 생성을 도와드리기 어렵습니다
@@ -320,21 +305,7 @@ export function DiagnosisQuestionnaire({
       <div className="step-section max-w-140 mx-auto py-20 px-12">
         <div className="mb-5">
           <div className="w-11 h-11 rounded-xl bg-warm/10 border-[0.5px] border-warm/30 flex items-center justify-center mb-4">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path
-                d="M10 6v5M10 14h.01"
-                stroke="#C77B4E"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-              <circle
-                cx="10"
-                cy="10"
-                r="8"
-                stroke="#C77B4E"
-                strokeWidth="1.2"
-              />
-            </svg>
+            <CircleAlert size={20} color="#C77B4E" strokeWidth={1.5} />
           </div>
           <div className="font-serif-kr text-[22px] font-bold text-navy mb-2.5">
             이번 버전에서는 아직 도와드리지 못합니다
@@ -407,15 +378,7 @@ export function DiagnosisQuestionnaire({
     return (
       <div className="step-section max-w-140 mx-auto py-20 px-12">
         <div className="w-11 h-11 rounded-xl bg-warm/10 border-[0.5px] border-warm/30 flex items-center justify-center mb-4">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path
-              d="M4 10h12M10 4l6 6-6 6"
-              stroke="#C77B4E"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <ArrowRight size={20} color="#C77B4E" strokeWidth={1.5} />
         </div>
         <div className="font-serif-kr text-[22px] font-bold text-navy mb-2.5">
           풀림이 도움드리기 어렵습니다
@@ -677,17 +640,7 @@ export function DiagnosisQuestionnaire({
                       sel ? "bg-blue" : "border-[1.5px] border-navy/20"
                     }`}
                   >
-                    {sel && (
-                      <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
-                        <path
-                          d="M2 4.5L3.8 6.3L7 3"
-                          stroke="white"
-                          strokeWidth="1.4"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    )}
+                    {sel && <Check size={11} color="white" strokeWidth={2.5} />}
                   </div>
                   <span
                     className={`text-[13.5px] ${
@@ -785,17 +738,7 @@ export function DiagnosisQuestionnaire({
                       sel ? "bg-blue" : "border-[1.5px] border-navy/20"
                     }`}
                   >
-                    {sel && (
-                      <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
-                        <path
-                          d="M1.5 4.5L3.5 6.5L7.5 2.5"
-                          stroke="white"
-                          strokeWidth="1.4"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    )}
+                    {sel && <Check size={11} color="white" strokeWidth={2.5} />}
                   </div>
                   <span
                     className={`text-[13.5px] ${

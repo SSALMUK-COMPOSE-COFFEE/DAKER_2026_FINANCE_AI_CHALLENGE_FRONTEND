@@ -1,3 +1,4 @@
+import { Check } from "lucide-react"
 import { STEP_LABELS } from "@/data/steps"
 import { Wordmark } from "./Wordmark"
 
@@ -33,15 +34,7 @@ export function Sidebar({
               <div className="shrink-0 mt-px">
                 {done ? (
                   <div className="w-5 h-5 rounded-full bg-blue flex items-center justify-center">
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                      <path
-                        d="M2 5.5 L4.2 7.5 L8 3"
-                        stroke="white"
-                        strokeWidth="1.4"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    <Check size={12} color="white" strokeWidth={2.5} />
                   </div>
                 ) : active ? (
                   <div className="w-5 h-5 rounded-full bg-blue flex items-center justify-center">

@@ -1,4 +1,5 @@
 import { useRef, useState } from "react"
+import { Check, CircleCheck } from "lucide-react"
 import { getEvidenceChecklist, CAT_LABELS } from "@/data/evidence"
 import { BANKS, BANK_DISCLOSURE_NOTE } from "@/data/bankRequirements"
 import { getLetterTemplate } from "@/data/letterTemplates"
@@ -197,22 +198,7 @@ export function DataUpload({
                         checked ? "bg-blue" : "border-[1.5px] border-navy/22"
                       }`}
                     >
-                      {checked && (
-                        <svg
-                          width="10"
-                          height="10"
-                          viewBox="0 0 10 10"
-                          fill="none"
-                        >
-                          <path
-                            d="M2 5L4 7L8 3"
-                            stroke="white"
-                            strokeWidth="1.4"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      )}
+                      {checked && <Check size={12} color="white" strokeWidth={2.5} />}
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-1.5 mb-0.5">
@@ -327,16 +313,7 @@ export function DataUpload({
                 {f.status === "loading" ? (
                   <span className="text-[11px] text-blue">업로드 중…</span>
                 ) : (
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <circle cx="8" cy="8" r="7" fill="rgba(61,111,166,0.12)" />
-                    <path
-                      d="M5 8.2L7 10.2L11 6.2"
-                      stroke="#3D6FA6"
-                      strokeWidth="1.4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                  <CircleCheck size={16} className="text-blue" fill="rgba(61,111,166,0.12)" strokeWidth={1.75} />
                 )}
                 <button
                   onClick={() =>
