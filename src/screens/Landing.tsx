@@ -1,5 +1,5 @@
-import { Wordmark } from "@/components/Wordmark"
-import { TransactionGraph } from "@/components/TransactionGraph"
+import { Wordmark } from '@/components/Wordmark';
+import { TransactionGraph } from '@/components/TransactionGraph';
 
 export function Landing({ onStart }: { onStart: () => void }) {
   return (
@@ -11,7 +11,7 @@ export function Landing({ onStart }: { onStart: () => void }) {
 
       {/* Hero */}
       <div className="mb-12">
-        <div className="font-serif-kr text-[42px] font-bold text-navy leading-tight tracking-[-0.02em] mb-4">
+        <div className="text-[42px] font-bold text-navy leading-tight tracking-[-0.02em] mb-4">
           묶인 계좌,
           <br />
           <span className="text-blue">근거로 풀립니다.</span>
@@ -44,9 +44,7 @@ export function Landing({ onStart }: { onStart: () => void }) {
               </div>
               <div className="flex items-center gap-1.75 mb-1.5">
                 <div className="w-2 h-2 rounded-full bg-warm/50" />
-                <span className="text-[11px] text-navy/55">
-                  의심 경유 계좌
-                </span>
+                <span className="text-[11px] text-navy/55">의심 경유 계좌</span>
               </div>
               <div className="flex items-center gap-1.75">
                 <div className="w-4 h-px bg-navy/25" />
@@ -70,17 +68,17 @@ export function Landing({ onStart }: { onStart: () => void }) {
       {/* Process steps */}
       <div className="flex gap-3 mb-11">
         {[
-          "거래 내역 업로드",
-          "AI 분석 3분",
-          "소명서 초안 생성",
-          "은행 제출",
+          '거래 내역 업로드',
+          'AI 분석 3분',
+          '소명서 초안 생성',
+          '은행 제출',
         ].map((s, i) => (
           <div
             key={i}
             className="flex-1 bg-navy/4 rounded-lg py-3 px-3.5 border-[0.5px] border-navy/10"
           >
             <div className="text-[10px] text-blue font-semibold mb-1">
-              {String(i + 1).padStart(2, "0")}
+              {String(i + 1).padStart(2, '0')}
             </div>
             <div className="text-[11.5px] text-navy font-medium leading-[1.4]">
               {s}
@@ -96,5 +94,5 @@ export function Landing({ onStart }: { onStart: () => void }) {
         소명서 작성 시작하기
       </button>
     </div>
-  )
+  );
 }

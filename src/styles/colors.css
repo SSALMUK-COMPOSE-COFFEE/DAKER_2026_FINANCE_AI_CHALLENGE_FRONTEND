@@ -6,14 +6,14 @@
  * (e.g. dynamically computed SVG stroke/fill attributes).
  */
 @theme {
-  --color-page:   #FAFAF9;
-  --color-card:   #FFFFFF;
-  --color-border: #E4E4E1;
-  --color-navy:   #10233F;
-  --color-blue:   #3D6FA6;
-  --color-sky:    #7FA8C9;
-  --color-warm:   #C77B4E;
+  --color-page: #ffffff;
+  --color-card: #ffffff;
+  --color-border: #e4e4e1;
+  --color-navy: #10233f;
+  --color-blue: #2563eb;
+  --color-sky: #60a5fa;
+  --color-warm: #c77b4e;
 
-  --font-serif: 'Noto Serif KR', Georgia, serif;
-  --font-sans:  'Noto Sans KR', system-ui, sans-serif;
+  --default-font-family:
+    'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif;
 }

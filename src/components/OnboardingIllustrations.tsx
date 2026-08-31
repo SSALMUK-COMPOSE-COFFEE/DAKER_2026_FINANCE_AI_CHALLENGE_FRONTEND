@@ -115,7 +115,7 @@ export function SlideIllustration1() {
         y="218"
         textAnchor="middle"
         fontSize="11"
-        fontFamily="'Noto Sans KR', sans-serif"
+        fontFamily="'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif"
         fill="rgba(16,35,63,0.55)"
         fontWeight="500"
       >
@@ -231,7 +231,7 @@ export function SlideIllustration1() {
         y="218"
         textAnchor="middle"
         fontSize="11"
-        fontFamily="'Noto Sans KR', sans-serif"
+        fontFamily="'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif"
         fill={COLORS.blue}
         fontWeight="600"
       >
@@ -244,7 +244,7 @@ export function SlideIllustration1() {
         y="250"
         textAnchor="middle"
         fontSize="11"
-        fontFamily="'Noto Sans KR', sans-serif"
+        fontFamily="'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif"
         fill="rgba(16,35,63,0.45)"
       >
         직접 작성할 때
@@ -254,7 +254,7 @@ export function SlideIllustration1() {
         y="250"
         textAnchor="middle"
         fontSize="11"
-        fontFamily="'Noto Sans KR', sans-serif"
+        fontFamily="'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif"
         fill={COLORS.blue}
       >
         풀림 사용 시
@@ -320,7 +320,7 @@ export function SlideIllustration2() {
         y="200"
         textAnchor="middle"
         fontSize="10.5"
-        fontFamily="'Noto Sans KR', sans-serif"
+        fontFamily="'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif"
         fill="rgba(16,35,63,0.5)"
       >
         거래 내역
@@ -338,7 +338,7 @@ export function SlideIllustration2() {
         y="122"
         textAnchor="middle"
         fontSize="9"
-        fontFamily="'Noto Sans KR', sans-serif"
+        fontFamily="'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif"
         fill="rgba(16,35,63,0.55)"
         fontWeight="600"
       >
@@ -390,7 +390,7 @@ export function SlideIllustration2() {
         y="200"
         textAnchor="middle"
         fontSize="10.5"
-        fontFamily="'Noto Sans KR', sans-serif"
+        fontFamily="'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif"
         fill={COLORS.blue}
       >
         AI 분석
@@ -401,7 +401,7 @@ export function SlideIllustration2() {
         y="94"
         textAnchor="middle"
         fontSize="9"
-        fontFamily="'Noto Sans KR', sans-serif"
+        fontFamily="'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif"
         fill="white"
         fontWeight="600"
       >
@@ -492,7 +492,7 @@ export function SlideIllustration2() {
         y="215"
         textAnchor="middle"
         fontSize="10.5"
-        fontFamily="'Noto Sans KR', sans-serif"
+        fontFamily="'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif"
         fill={COLORS.blue}
       >
         소명서 완성
@@ -503,7 +503,7 @@ export function SlideIllustration2() {
         y="94"
         textAnchor="middle"
         fontSize="9"
-        fontFamily="'Noto Sans KR', sans-serif"
+        fontFamily="'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif"
         fill="white"
         fontWeight="600"
       >
@@ -658,7 +658,7 @@ export function SlideIllustration3() {
         y="232"
         textAnchor="middle"
         fontSize="8"
-        fontFamily="'Noto Sans KR', sans-serif"
+        fontFamily="'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif"
         fill="white"
         fontWeight="700"
       >
@@ -669,7 +669,7 @@ export function SlideIllustration3() {
         y="232"
         textAnchor="middle"
         fontSize="11"
-        fontFamily="'Noto Sans KR', sans-serif"
+        fontFamily="'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif"
         fill={COLORS.navy}
         fontWeight="500"
       >

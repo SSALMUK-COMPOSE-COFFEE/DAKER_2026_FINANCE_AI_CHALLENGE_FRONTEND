@@ -151,7 +151,7 @@ export function TransactionGraph({
                 y={n.y + (n.y < 120 ? -14 : 18)}
                 textAnchor="middle"
                 fontSize={9.5}
-                fontFamily="'Noto Sans KR', sans-serif"
+                fontFamily="'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif"
                 fill={isSelf ? COLORS.blue : "rgba(16,35,63,0.5)"}
                 fontWeight={isSelf ? "600" : "400"}
               >
