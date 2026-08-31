@@ -28,9 +28,15 @@ export default function App() {
             onAnswersChange={setAnswers}
           />
         )}
-        {step === 2 && <DataUpload answers={answers} onNext={() => setStep(3)} />}
-        {step === 3 && <AnalysisResult answers={answers} onNext={() => setStep(4)} />}
-        {step === 4 && <DocumentEditor answers={answers} onNext={() => setStep(5)} />}
+        {step === 2 && (
+          <DataUpload answers={answers} onNext={() => setStep(3)} />
+        )}
+        {step === 3 && (
+          <AnalysisResult answers={answers} onNext={() => setStep(4)} />
+        )}
+        {step === 4 && (
+          <DocumentEditor answers={answers} onNext={() => setStep(5)} />
+        )}
         {step === 5 && <SubmissionSupport />}
       </main>
     </div>

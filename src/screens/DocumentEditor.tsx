@@ -1,5 +1,9 @@
 import { useState } from "react"
-import { APPLICATION_REASON_DOC, INCIDENT_REPORT_DOC, EVIDENCE_INDEX_DOC } from "@/data/document"
+import {
+  APPLICATION_REASON_DOC,
+  INCIDENT_REPORT_DOC,
+  EVIDENCE_INDEX_DOC,
+} from "@/data/document"
 import { getEvidenceChecklist } from "@/data/evidence"
 import type { Answers } from "@/types"
 
@@ -11,7 +15,13 @@ const TABS: { key: DocKey; label: string; sub: string }[] = [
   { key: "evidence", label: "증거 인덱스", sub: "주장 ↔ 증거 대응" },
 ]
 
-export function DocumentEditor({ answers, onNext }: { answers: Answers; onNext: () => void }) {
+export function DocumentEditor({
+  answers,
+  onNext,
+}: {
+  answers: Answers
+  onNext: () => void
+}) {
   const [docs, setDocs] = useState<Record<DocKey, string>>({
     application: APPLICATION_REASON_DOC,
     incident: INCIDENT_REPORT_DOC,
@@ -25,8 +35,10 @@ export function DocumentEditor({ answers, onNext }: { answers: Answers; onNext: 
     <div className="step-section pt-14 h-full">
       <div className="px-12 mb-4">
         <div className="mb-2 flex items-center gap-2">
-          <span className="text-[11px] text-blue font-semibold tracking-[0.1em]">STEP 4</span>
-          <span className="text-[11px] text-blue bg-blue/[10%] py-0.5 px-2 rounded-full font-semibold">
+          <span className="text-[11px] text-blue font-semibold tracking-widest">
+            STEP 4
+          </span>
+          <span className="text-[11px] text-blue bg-blue/10 py-0.5 px-2 rounded-full font-semibold">
             증거 {checklist.length}종 기반 초안
           </span>
         </div>
@@ -41,35 +53,48 @@ export function DocumentEditor({ answers, onNext }: { answers: Answers; onNext: 
             </button>
           </div>
         </div>
-        <p className="font-sans-kr text-[13.5px] text-navy/[50%] mt-1.5">
-          이의제기신청서 사유란·경위서·증거 인덱스 3종이 함께 준비됩니다. 문서를 직접 검토하고 필요한 부분을 고쳐 쓰세요.
+        <p className="font-sans-kr text-[13.5px] text-navy/50 mt-1.5">
+          이의제기신청서 사유란·경위서·증거 인덱스 3종이 함께 준비됩니다. 문서를
+          직접 검토하고 필요한 부분을 고쳐 쓰세요.
         </p>
       </div>
 
       {/* Document tabs */}
       <div className="px-12 mb-2 flex gap-1.5">
-        {TABS.map(t => {
+        {TABS.map((t) => {
           const active = t.key === activeTab
           return (
             <button
               key={t.key}
               onClick={() => setActiveTab(t.key)}
-              className={`text-left py-2 px-3.5 rounded-t-lg border-[0.5px] border-b-0 ${active ? "bg-white border-navy/[10%]" : "bg-navy/[3%] border-transparent"}`}
+              className={`text-left py-2 px-3.5 rounded-t-lg border-[0.5px] border-b-0 ${
+                active
+                  ? "bg-white border-navy/10"
+                  : "bg-navy/3 border-transparent"
+              }`}
             >
-              <div className={`text-[12.5px] font-semibold ${active ? "text-blue" : "text-navy/[55%]"}`}>{t.label}</div>
-              <div className="text-[10px] text-navy/[38%]">{t.sub}</div>
+              <div
+                className={`text-[12.5px] font-semibold ${
+                  active ? "text-blue" : "text-navy/55"
+                }`}
+              >
+                {t.label}
+              </div>
+              <div className="text-[10px] text-navy/38">{t.sub}</div>
             </button>
           )
         })}
       </div>
 
       {/* Document editor */}
-      <div className="border-t-[0.5px] border-navy/[10%] pt-7 px-12 pb-7 overflow-y-auto bg-white">
-        <div className="bg-white rounded shadow-[0_1px_4px_rgba(16,35,63,0.06)] py-[52px] px-14 max-w-[760px] mx-auto min-h-[600px]">
+      <div className="border-t-[0.5px] border-navy/10 pt-7 px-12 pb-7 overflow-y-auto bg-white">
+        <div className="bg-white rounded shadow-[0_1px_4px_rgba(16,35,63,0.06)] py-13 px-14 max-w-190 mx-auto min-h-150">
           <textarea
             value={docs[activeTab]}
-            onChange={e => setDocs(prev => ({ ...prev, [activeTab]: e.target.value }))}
-            className="w-full min-h-[560px] border-none outline-none resize-none text-[13.5px] leading-[2] text-navy bg-transparent"
+            onChange={(e) =>
+              setDocs((prev) => ({ ...prev, [activeTab]: e.target.value }))
+            }
+            className="w-full min-h-140 border-none outline-none resize-none text-[13.5px] leading-loose text-navy bg-transparent"
           />
         </div>
       </div>
