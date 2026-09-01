@@ -35,7 +35,7 @@ export function SubmissionSupport({ onBack }: { onBack: () => void }) {
   const doneCount = Object.values(checked).filter(Boolean).length;
 
   return (
-    <div className="step-section max-w-175 mx-auto pt-14 px-12 pb-20">
+    <div className="step-section max-w-175 mx-auto pt-8 px-5 pb-14 md:pt-14 md:px-12 md:pb-20">
       <div className="mb-2">
         <span className="text-[11px] text-blue font-semibold tracking-widest">
           STEP 5
@@ -71,7 +71,7 @@ export function SubmissionSupport({ onBack }: { onBack: () => void }) {
       </label>
 
       {/* Download bar */}
-      <div className="bg-blue/7 border-[0.5px] border-blue/30 rounded-[10px] py-4 px-5 flex items-center justify-between mb-7">
+      <div className="bg-blue/7 border-[0.5px] border-blue/30 rounded-[10px] py-4 px-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between mb-7">
         <div>
           <div className="text-[13.5px] font-semibold text-navy mb-0.5">
             소명서 — 홍길동_20260824.pdf
@@ -81,7 +81,7 @@ export function SubmissionSupport({ onBack }: { onBack: () => void }) {
           </div>
         </div>
         <button
-          className="btn-primary text-[13px] disabled:opacity-35"
+          className="btn-primary text-[13px] disabled:opacity-35 self-start sm:self-auto"
           disabled={!agreed}
         >
           PDF 다운로드
@@ -148,7 +148,7 @@ export function SubmissionSupport({ onBack }: { onBack: () => void }) {
         <div className="text-[12.5px] font-semibold text-navy mb-3">
           주요 은행 이의제기 접수처
         </div>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {BANKS.map((b) => (
             <div key={b.name} className="card py-3.5 px-4">
               <div className="text-[13px] font-semibold text-navy mb-0.75">

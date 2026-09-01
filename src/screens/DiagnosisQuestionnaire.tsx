@@ -120,7 +120,7 @@ export function DiagnosisQuestionnaire({
   // ── INTRO: 자유 서술 ──────────────────────────────────────────────────────
   if (screen === "intro")
     return (
-      <div className="step-section max-w-150 mx-auto pt-14 px-12 pb-20">
+      <div className="step-section max-w-150 mx-auto pt-8 px-5 pb-14 md:pt-14 md:px-12 md:pb-20">
         <div className="text-[11px] text-blue font-semibold tracking-widest mb-2">
           STEP 1 · 상황 진단
         </div>
@@ -155,7 +155,7 @@ export function DiagnosisQuestionnaire({
   // ── 경찰 길 ────────────────────────────────────────────────────────────────
   if (screen === "police")
     return (
-      <div className="step-section max-w-140 mx-auto py-20 px-12">
+      <div className="step-section max-w-140 mx-auto py-10 px-5 md:py-20 md:px-12">
         <div className="font-serif-kr text-[22px] font-bold text-navy mb-2.5">
           지금 필요한 건 이의제기신청서가 아닙니다
         </div>
@@ -188,7 +188,7 @@ export function DiagnosisQuestionnaire({
   // ── 경보 단계 ──────────────────────────────────────────────────────────────
   if (screen === "warningStage")
     return (
-      <div className="step-section max-w-140 mx-auto py-20 px-12">
+      <div className="step-section max-w-140 mx-auto py-10 px-5 md:py-20 md:px-12">
         <div className="font-serif-kr text-[22px] font-bold text-navy mb-2.5">
           아직 계좌가 묶이지 않았습니다
         </div>
@@ -228,7 +228,7 @@ export function DiagnosisQuestionnaire({
   // ── 민사 ──────────────────────────────────────────────────────────────────
   if (screen === "civil")
     return (
-      <div className="step-section max-w-140 mx-auto py-20 px-12">
+      <div className="step-section max-w-140 mx-auto py-10 px-5 md:py-20 md:px-12">
         <div className="font-serif-kr text-[22px] font-bold text-navy mb-2.5">
           소송 서류를 받으셨군요
         </div>
@@ -250,7 +250,7 @@ export function DiagnosisQuestionnaire({
   // ── 금액 초과입금 즉시 경고 ──────────────────────────────────────────────────
   if (screen === "moneyMismatch")
     return (
-      <div className="step-section max-w-140 mx-auto py-20 px-12">
+      <div className="step-section max-w-140 mx-auto py-10 px-5 md:py-20 md:px-12">
         <div className="w-11 h-11 rounded-xl bg-warm/10 border-[0.5px] border-warm/30 flex items-center justify-center mb-4">
           <CircleAlert size={20} color="#C77B4E" strokeWidth={1.5} />
         </div>
@@ -286,7 +286,7 @@ export function DiagnosisQuestionnaire({
   // ── 자기부죄 종료 화면 ────────────────────────────────────────────────────
   if (screen === "selfIncrimination")
     return (
-      <div className="step-section max-w-140 mx-auto py-20 px-12">
+      <div className="step-section max-w-140 mx-auto py-10 px-5 md:py-20 md:px-12">
         <div className="w-11 h-11 rounded-xl bg-warm/10 border-[0.5px] border-warm/30 flex items-center justify-center mb-4">
           <CircleAlert size={20} color="#C77B4E" strokeWidth={1.5} />
         </div>
@@ -312,7 +312,7 @@ export function DiagnosisQuestionnaire({
   // ── OUT-OF-SCOPE (통장협박·통장묶기) ────────────────────────────────────────
   if (screen === "oos")
     return (
-      <div className="step-section max-w-140 mx-auto py-20 px-12">
+      <div className="step-section max-w-140 mx-auto py-10 px-5 md:py-20 md:px-12">
         <div className="mb-5">
           <div className="w-11 h-11 rounded-xl bg-warm/10 border-[0.5px] border-warm/30 flex items-center justify-center mb-4">
             <CircleAlert size={20} color="#C77B4E" strokeWidth={1.5} />
@@ -386,7 +386,7 @@ export function DiagnosisQuestionnaire({
   // ── EXIT (접근매체 양도) ────────────────────────────────────────────────────
   if (screen === "exit")
     return (
-      <div className="step-section max-w-140 mx-auto py-20 px-12">
+      <div className="step-section max-w-140 mx-auto py-10 px-5 md:py-20 md:px-12">
         <div className="w-11 h-11 rounded-xl bg-warm/10 border-[0.5px] border-warm/30 flex items-center justify-center mb-4">
           <ArrowRight size={20} color="#C77B4E" strokeWidth={1.5} />
         </div>
@@ -450,7 +450,7 @@ export function DiagnosisQuestionnaire({
     }
 
     return (
-      <div className="step-section max-w-160 mx-auto pt-14 px-12 pb-20">
+      <div className="step-section max-w-160 mx-auto pt-8 px-5 pb-14 md:pt-14 md:px-12 md:pb-20">
         <div className="text-[11px] text-blue font-semibold tracking-widest mb-2">
           STEP 1 · 진단 완료
         </div>
@@ -458,7 +458,7 @@ export function DiagnosisQuestionnaire({
           상황 진단이 완료되었습니다
         </h1>
 
-        <div className="grid grid-cols-2 gap-3 mb-7">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-7">
           <div className="card py-4.5 px-5">
             <div className="text-[11px] font-semibold text-navy/40 mb-1.5">
               추정 유형
@@ -602,7 +602,7 @@ export function DiagnosisQuestionnaire({
   }
 
   return (
-    <div className="step-section max-w-150 mx-auto pt-14 px-12 pb-20">
+    <div className="step-section max-w-150 mx-auto pt-8 px-5 pb-14 md:pt-14 md:px-12 md:pb-20">
       <div className="text-[11px] text-blue font-semibold tracking-widest mb-1">
         STEP 1 · 상황 진단
       </div>
@@ -843,7 +843,7 @@ export function DiagnosisQuestionnaire({
       {/* Q7 caseDetails */}
       {q.type === "caseDetails" && (
         <>
-          <div className="grid grid-cols-2 gap-3 mb-4">
+          <div className="grid grid-cols-2 gap-2.5 sm:gap-3 mb-4">
             <div>
               <div className="text-xs font-semibold text-navy/50 mb-2">
                 날짜
@@ -868,7 +868,7 @@ export function DiagnosisQuestionnaire({
               />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3 mb-4">
+          <div className="grid grid-cols-2 gap-2.5 sm:gap-3 mb-4">
             <div>
               <div className="text-xs font-semibold text-navy/50 mb-2">
                 입금액 (원)
@@ -903,7 +903,7 @@ export function DiagnosisQuestionnaire({
             환급청구의 상한은 "내가 받은 돈"이 아니라 "공고되어 소멸된
             채권액"입니다. 세 값이 다르면 여기서 바로 알려드립니다.
           </p>
-          <div className="grid grid-cols-3 gap-3 mb-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-2">
             <div>
               <div className="text-[11px] font-semibold text-navy/50 mb-2">
                 거래금액

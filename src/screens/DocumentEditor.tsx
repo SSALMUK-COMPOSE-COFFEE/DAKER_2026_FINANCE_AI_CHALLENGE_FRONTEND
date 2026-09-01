@@ -34,8 +34,8 @@ export function DocumentEditor({
   const checklist = getEvidenceChecklist(answers)
 
   return (
-    <div className="step-section pt-14 h-full">
-      <div className="px-12 mb-4">
+    <div className="step-section pt-6 md:pt-14 h-full">
+      <div className="px-5 md:px-12 mb-4">
         <div className="mb-2 flex items-center gap-2">
           <span className="text-[11px] text-blue font-semibold tracking-widest">
             STEP 4
@@ -44,11 +44,11 @@ export function DocumentEditor({
             증거 {checklist.length}종 기반 초안
           </span>
         </div>
-        <div className="flex items-baseline justify-between">
-          <h1 className="font-serif-kr text-[28px] font-bold text-navy tracking-[-0.01em]">
+        <div className="flex flex-col md:flex-row md:items-baseline gap-3 md:gap-0 md:justify-between">
+          <h1 className="font-serif-kr text-2xl md:text-[28px] font-bold text-navy tracking-[-0.01em]">
             소명서 초안 편집
           </h1>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <button className="btn-secondary text-[13px]" onClick={onBack}>← 이전</button>
             <button className="btn-secondary text-[13px]">인쇄 미리보기</button>
             <button className="btn-primary text-[13px]" onClick={onNext}>
@@ -63,7 +63,7 @@ export function DocumentEditor({
       </div>
 
       {/* Document tabs */}
-      <div className="px-12 mb-2 flex gap-1.5">
+      <div className="px-5 md:px-12 mb-2 flex gap-1.5 overflow-x-auto">
         {TABS.map((t) => {
           const active = t.key === activeTab
           return (
@@ -90,8 +90,8 @@ export function DocumentEditor({
       </div>
 
       {/* Document editor */}
-      <div className="border-t-[0.5px] border-navy/10 pt-7 px-12 pb-7 overflow-y-auto bg-white">
-        <div className="bg-white rounded shadow-[0_1px_4px_rgba(16,35,63,0.06)] py-13 px-14 max-w-190 mx-auto min-h-150">
+      <div className="border-t-[0.5px] border-navy/10 pt-5 px-5 pb-5 md:pt-7 md:px-12 md:pb-7 overflow-y-auto bg-white">
+        <div className="bg-white rounded shadow-[0_1px_4px_rgba(16,35,63,0.06)] py-6 px-5 md:py-13 md:px-14 max-w-190 mx-auto min-h-150">
           <textarea
             value={docs[activeTab]}
             onChange={(e) =>

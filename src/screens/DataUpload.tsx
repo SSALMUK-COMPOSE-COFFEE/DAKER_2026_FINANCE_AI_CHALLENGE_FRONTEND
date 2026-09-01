@@ -56,7 +56,7 @@ export function DataUpload({
   }
 
   return (
-    <div className="step-section max-w-175 mx-auto pt-14 px-12 pb-20">
+    <div className="step-section max-w-175 mx-auto pt-8 px-5 pb-14 md:pt-14 md:px-12 md:pb-20">
       <div className="text-[11px] text-blue font-semibold tracking-widest mb-2">
         STEP 2
       </div>

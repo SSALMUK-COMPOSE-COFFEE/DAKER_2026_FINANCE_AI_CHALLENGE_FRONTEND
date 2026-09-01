@@ -62,7 +62,7 @@ export function TransactionGraph({
       width={width}
       height={height}
       viewBox="0 0 520 260"
-      className="overflow-visible"
+      className="overflow-visible max-w-full h-auto"
     >
       <defs>
         <marker

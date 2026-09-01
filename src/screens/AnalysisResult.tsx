@@ -77,7 +77,7 @@ export function AnalysisResult({
   ]
 
   return (
-    <div className="step-section max-w-215 mx-auto pt-14 px-12 pb-20">
+    <div className="step-section max-w-215 mx-auto pt-8 px-5 pb-14 md:pt-14 md:px-12 md:pb-20">
       <div className="mb-2">
         <span className="text-[11px] text-blue font-semibold tracking-widest">
           STEP 3
@@ -137,7 +137,7 @@ export function AnalysisResult({
             소멸된 채권액" 기준이므로, 청구액을 자동으로 상한선에 맞춰
             두었습니다.
           </div>
-          <div className="grid grid-cols-3 gap-2 text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center">
             <div className="bg-white rounded-lg py-2 px-2 border-[0.5px] border-warm/20">
               <div className="text-[10px] text-navy/45 mb-1">거래금액</div>
               <div className="text-[12.5px] font-semibold text-navy">
@@ -161,9 +161,9 @@ export function AnalysisResult({
       )}
 
       {/* Main analysis grid */}
-      <div className="grid grid-cols-[1fr_320px] gap-5 mb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-5 mb-6">
         {/* Graph panel */}
-        <div className="card pt-7 px-7 pb-5">
+        <div className="card pt-7 px-5 pb-5 md:px-7">
           <div className="text-xs text-navy/45 mb-4 tracking-[0.04em]">
             거래 흐름 시각화
           </div>
@@ -217,7 +217,7 @@ export function AnalysisResult({
       </div>
 
       {/* Evidence cards */}
-      <div className="grid grid-cols-2 gap-2.5 mb-9">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-9">
         {EVIDENCE.map((e, i) => (
           <div key={i} className="card py-4 px-4.5">
             <div className="flex justify-between items-center mb-1.5">
