@@ -16,28 +16,41 @@ export default function App() {
   const [dday, setDday] = useState<number | null>(null)
 
   return (
-    <div className="min-h-screen bg-page flex flex-row-reverse">
+    <div className="h-screen overflow-hidden bg-page flex flex-row-reverse">
       {showModal && <OnboardingModal onClose={() => setShowModal(false)} />}
       <Sidebar step={step} onStepClick={setStep} dday={dday} />
-      <main className="flex-1 overflow-y-auto min-h-screen">
+      <main className="flex-1 h-screen overflow-y-auto">
         {step === 0 && <Landing onStart={() => setStep(1)} />}
         {step === 1 && (
           <DiagnosisQuestionnaire
+            onBack={() => setStep(0)}
             onNext={() => setStep(2)}
             onDdayChange={setDday}
             onAnswersChange={setAnswers}
           />
         )}
         {step === 2 && (
-          <DataUpload answers={answers} onNext={() => setStep(3)} />
+          <DataUpload
+            answers={answers}
+            onBack={() => setStep(1)}
+            onNext={() => setStep(3)}
+          />
         )}
         {step === 3 && (
-          <AnalysisResult answers={answers} onNext={() => setStep(4)} />
+          <AnalysisResult
+            answers={answers}
+            onBack={() => setStep(2)}
+            onNext={() => setStep(4)}
+          />
         )}
         {step === 4 && (
-          <DocumentEditor answers={answers} onNext={() => setStep(5)} />
+          <DocumentEditor
+            answers={answers}
+            onBack={() => setStep(3)}
+            onNext={() => setStep(5)}
+          />
         )}
-        {step === 5 && <SubmissionSupport />}
+        {step === 5 && <SubmissionSupport onBack={() => setStep(4)} />}
       </main>
     </div>
   )

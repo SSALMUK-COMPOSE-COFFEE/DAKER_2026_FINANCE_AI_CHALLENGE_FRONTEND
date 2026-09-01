@@ -29,7 +29,7 @@ const STATUS_STAGES = [
   },
 ];
 
-export function SubmissionSupport() {
+export function SubmissionSupport({ onBack }: { onBack: () => void }) {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [agreed, setAgreed] = useState(false);
   const doneCount = Object.values(checked).filter(Boolean).length;
@@ -211,11 +211,13 @@ export function SubmissionSupport() {
         </div>
       </div>
 
-      <div className="bg-blue/6 border-[0.5px] border-blue/20 rounded-xl py-4 px-5 text-[12.5px] text-navy/70 leading-[1.7]">
+      <div className="bg-blue/6 border-[0.5px] border-blue/20 rounded-xl py-4 px-5 text-[12.5px] text-navy/70 leading-[1.7] mb-6">
         여기까지가 풀림이 도와드릴 수 있는 범위입니다. 실제 제출은 은행 영업점
         또는 은행 앱에서 진행해 주세요. 진행 상황은 접수하신 은행의 안내에 따라
         확인하시면 됩니다.
       </div>
+
+      <button className="btn-secondary" onClick={onBack}>← 이전</button>
     </div>
   );
 }

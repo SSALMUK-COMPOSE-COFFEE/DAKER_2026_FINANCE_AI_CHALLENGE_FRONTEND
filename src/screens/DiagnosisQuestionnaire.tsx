@@ -18,10 +18,12 @@ const SELF_INCRIMINATION_VALUES = ["도박환전", "환치기", "대리인출송
 const REFERENCE_TODAY = new Date("2026-08-27")
 
 export function DiagnosisQuestionnaire({
+  onBack,
   onNext,
   onDdayChange,
   onAnswersChange,
 }: {
+  onBack: () => void
   onNext: () => void
   onDdayChange: (d: number | null) => void
   onAnswersChange: (a: Answers) => void
@@ -105,6 +107,13 @@ export function DiagnosisQuestionnaire({
     }
     if (q.type === "multi")
       return Array.isArray(ans[q.id]) && (ans[q.id] as string[]).length > 0
+    if (q.type === "single") {
+      const val = ans[q.id] as string
+      if (!val) return false
+      // "모름"/"이유모름" 같은 pause 값은 별도 인라인 안내로만 진행되므로
+      // 메인 "다음" 버튼은 계속 비활성 상태로 둔다.
+      return !PAUSE_VALUES[q.id]?.includes(val)
+    }
     return !!ans[q.id]
   }
 
@@ -129,6 +138,7 @@ export function DiagnosisQuestionnaire({
           className="w-full h-40 py-3.5 px-4 border-[0.5px] border-border rounded-[10px] text-[13.5px] text-navy bg-white outline-none resize-none leading-[1.7] box-border focus:border-blue/50 mb-6"
         />
         <div className="flex items-center gap-3">
+          <button className="btn-secondary" onClick={onBack}>← 이전</button>
           <button className="btn-primary" onClick={() => setScreen(0)}>
             다음 →
           </button>
@@ -548,9 +558,17 @@ export function DiagnosisQuestionnaire({
           )}
         </div>
 
-        <button className="btn-primary text-sm py-3.25 px-8" onClick={onNext}>
-          증거 준비로 진행 →
-        </button>
+        <div className="flex gap-2.5">
+          <button
+            className="btn-secondary"
+            onClick={() => setScreen(QUESTIONS.length - 1)}
+          >
+            ← 이전
+          </button>
+          <button className="btn-primary text-sm py-3.25 px-8" onClick={onNext}>
+            증거 준비로 진행 →
+          </button>
+        </div>
       </div>
     )
   }
@@ -623,12 +641,7 @@ export function DiagnosisQuestionnaire({
             return (
               <div key={opt.value}>
                 <button
-                  onClick={() => {
-                    set(q.id, opt.value)
-                    const pauseValues = PAUSE_VALUES[q.id]
-                    if (!pauseValues || !pauseValues.includes(opt.value))
-                      advance(qNum, opt.value)
-                  }}
+                  onClick={() => set(q.id, opt.value)}
                   className={`w-full text-left py-3.5 px-4.5 rounded-[10px] cursor-pointer transition-all duration-[120ms] flex items-center gap-3 ${
                     sel
                       ? "bg-blue/6 border border-blue/45"
@@ -691,6 +704,28 @@ export function DiagnosisQuestionnaire({
               아니요, 그런 건 없었습니다
             </button>
           </div>
+        </div>
+      )}
+
+      {q.type === "single" && (
+        <div className="flex gap-2.5 mb-6">
+          <button
+            className="btn-secondary"
+            onClick={() => setScreen(qNum > 0 ? qNum - 1 : "intro")}
+          >
+            ← 이전
+          </button>
+          {/* pause 값(모름/이유모름/받음 등)이 선택된 동안은 전용 인라인 UI가
+              진행을 대신하므로, 똑같은 "다음 →" 라벨이 중복 노출되지 않게 숨긴다. */}
+          {!PAUSE_VALUES[q.id]?.includes(ans[q.id] as string) && (
+            <button
+              className="btn-primary"
+              onClick={() => advance(qNum, ans[q.id] as string)}
+              disabled={!canAdvance()}
+            >
+              다음 →
+            </button>
+          )}
         </div>
       )}
 

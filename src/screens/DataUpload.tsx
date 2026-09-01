@@ -15,9 +15,11 @@ function priorityClasses(p: string) {
 
 export function DataUpload({
   answers,
+  onBack,
   onNext,
 }: {
   answers: Answers
+  onBack: () => void
   onNext: () => void
 }) {
   const [files, setFiles] = useState<UploadedFile[]>([])
@@ -352,9 +354,12 @@ export function DataUpload({
         </div>
       </div>
 
-      <button className="btn-primary text-sm py-3.25 px-8" onClick={onNext}>
-        AI 분석 시작 →
-      </button>
+      <div className="flex gap-2.5">
+        <button className="btn-secondary" onClick={onBack}>← 이전</button>
+        <button className="btn-primary text-sm py-3.25 px-8" onClick={onNext}>
+          AI 분석 시작 →
+        </button>
+      </div>
     </div>
   )
 }

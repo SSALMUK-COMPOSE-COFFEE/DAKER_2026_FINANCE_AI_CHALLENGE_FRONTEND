@@ -37,9 +37,11 @@ const EVIDENCE = [
 
 export function AnalysisResult({
   answers,
+  onBack,
   onNext,
 }: {
   answers: Answers
+  onBack: () => void
   onNext: () => void
 }) {
   const nameMismatch = answers.q6 === "다름"
@@ -254,9 +256,12 @@ export function AnalysisResult({
         은행 심사자가 읽어야 하는 것은 점수가 아니라 근거이기 때문입니다.
       </div>
 
-      <button className="btn-primary" onClick={onNext}>
-        이 결과로 소명서 초안 생성
-      </button>
+      <div className="flex gap-2.5">
+        <button className="btn-secondary" onClick={onBack}>← 이전</button>
+        <button className="btn-primary" onClick={onNext}>
+          이 결과로 소명서 초안 생성
+        </button>
+      </div>
     </div>
   )
 }
