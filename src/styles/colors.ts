@@ -4,11 +4,11 @@
  * colors) rather than a Tailwind class.
  */
 export const COLORS = {
-  page: '#FFFFFF',
-  card: '#FFFFFF',
-  border: '#E4E4E1',
-  navy: '#10233F',
-  blue: '#2563EB',
-  sky: '#60A5FA',
-  warm: '#C77B4E',
-} as const;
+  page: "#FFFFFF",
+  card: "#FFFFFF",
+  border: "#E4E4E1",
+  navy: "#10233F",
+  blue: "#2563EB",
+  sky: "#60A5FA",
+  warm: "#C77B4E",
+} as const

@@ -1,27 +1,27 @@
-import { useEffect, useRef, useState } from "react"
-import { Menu } from "lucide-react"
-import { Sidebar } from "@/components/Sidebar"
-import { OnboardingModal } from "@/components/OnboardingModal"
-import { Wordmark } from "@/components/Wordmark"
-import { Landing } from "@/screens/Landing"
-import { DiagnosisQuestionnaire } from "@/screens/DiagnosisQuestionnaire"
-import { DataUpload } from "@/screens/DataUpload"
-import { AnalysisResult } from "@/screens/AnalysisResult"
-import { DocumentEditor } from "@/screens/DocumentEditor"
-import { SubmissionSupport } from "@/screens/SubmissionSupport"
-import type { Answers } from "@/types"
+import { useEffect, useRef, useState } from 'react';
+import { Menu } from 'lucide-react';
+import { Sidebar } from '@/components/Sidebar';
+import { OnboardingModal } from '@/components/OnboardingModal';
+import { Wordmark } from '@/components/Wordmark';
+import { Landing } from '@/screens/Landing';
+import { DiagnosisQuestionnaire } from '@/screens/DiagnosisQuestionnaire';
+import { DataUpload } from '@/screens/DataUpload';
+import { AnalysisResult } from '@/screens/AnalysisResult';
+import { DocumentEditor } from '@/screens/DocumentEditor';
+import { SubmissionSupport } from '@/screens/SubmissionSupport';
+import type { Answers } from '@/types';
 
 export default function App() {
-  const [step, setStep] = useState(0)
-  const [showModal, setShowModal] = useState(true)
-  const [answers, setAnswers] = useState<Answers>({})
-  const [dday, setDday] = useState<number | null>(null)
-  const [mobileNavOpen, setMobileNavOpen] = useState(false)
-  const mainRef = useRef<HTMLElement>(null)
+  const [step, setStep] = useState(0);
+  const [showModal, setShowModal] = useState(true);
+  const [answers, setAnswers] = useState<Answers>({});
+  const [dday, setDday] = useState<number | null>(null);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const mainRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    mainRef.current?.scrollTo(0, 0)
-  }, [step])
+    mainRef.current?.scrollTo(0, 0);
+  }, [step]);
 
   return (
     <div className="h-screen overflow-hidden bg-page flex flex-col md:flex-row-reverse">
@@ -45,7 +45,11 @@ export default function App() {
       </div>
       <main
         ref={mainRef}
-        className={`flex-1 ${mobileNavOpen ? "overflow-hidden md:overflow-y-auto" : "overflow-y-auto"}`}
+        className={`flex-1 ${
+          mobileNavOpen
+            ? 'overflow-hidden md:overflow-y-auto'
+            : 'overflow-y-auto'
+        }`}
       >
         {step === 0 && <Landing onStart={() => setStep(1)} />}
         {step === 1 && (
@@ -80,5 +84,5 @@ export default function App() {
         {step === 5 && <SubmissionSupport onBack={() => setStep(4)} />}
       </main>
     </div>
-  )
+  );
 }

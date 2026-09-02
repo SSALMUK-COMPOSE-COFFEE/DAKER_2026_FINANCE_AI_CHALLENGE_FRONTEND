@@ -1,38 +1,38 @@
-import { useState } from 'react';
-import { Check } from 'lucide-react';
-import { BANKS } from '@/data/bankRequirements';
+import { useState } from "react"
+import { Check } from "lucide-react"
+import { BANKS } from "@/data/bankRequirements"
 
 const CHECKLIST = [
-  { id: 'doc', label: '소명서 (풀림 AI 작성본)' },
-  { id: 'tx', label: '거래 내역서 (최소 3개월치)' },
-  { id: 'tax', label: '세금계산서 또는 입금 근거 자료' },
-  { id: 'biz', label: '사업자등록증 또는 신분증 사본' },
-  { id: 'etc', label: '기타 거래 계약서 또는 용역 확인서' },
-];
+  { id: "doc", label: "소명서 (풀림 AI 작성본)" },
+  { id: "tx", label: "거래 내역서 (최소 3개월치)" },
+  { id: "tax", label: "세금계산서 또는 입금 근거 자료" },
+  { id: "biz", label: "사업자등록증 또는 신분증 사본" },
+  { id: "etc", label: "기타 거래 계약서 또는 용역 확인서" },
+]
 
 const STATUS_STAGES = [
-  { id: 'filed', label: '이의제기 접수됨', desc: '냈다' },
+  { id: "filed", label: "이의제기 접수됨", desc: "냈다" },
   {
-    id: 'accepted',
-    label: '이의제기 수용됨',
-    desc: '은행이 받아들였다 — 아직 해제는 아니다',
+    id: "accepted",
+    label: "이의제기 수용됨",
+    desc: "은행이 받아들였다 — 아직 해제는 아니다",
   },
   {
-    id: 'released',
-    label: '은행 지급정지 해제됨',
-    desc: '그 은행 계좌가 풀렸다',
+    id: "released",
+    label: "은행 지급정지 해제됨",
+    desc: "그 은행 계좌가 풀렸다",
   },
   {
-    id: 'fss',
-    label: '금감원 전자금융거래제한 해제됨',
-    desc: '전 금융권 제한이 풀렸다 — 은행 해제와 열흘 넘게 차이 날 수 있다',
+    id: "fss",
+    label: "금감원 전자금융거래제한 해제됨",
+    desc: "전 금융권 제한이 풀렸다 — 은행 해제와 열흘 넘게 차이 날 수 있다",
   },
-];
+]
 
 export function SubmissionSupport({ onBack }: { onBack: () => void }) {
-  const [checked, setChecked] = useState<Record<string, boolean>>({});
-  const [agreed, setAgreed] = useState(false);
-  const doneCount = Object.values(checked).filter(Boolean).length;
+  const [checked, setChecked] = useState<Record<string, boolean>>({})
+  const [agreed, setAgreed] = useState(false)
+  const doneCount = Object.values(checked).filter(Boolean).length
 
   return (
     <div className="step-section max-w-175 mx-auto pt-8 px-5 pb-14 md:pt-14 md:px-12 md:pb-20">
@@ -56,12 +56,10 @@ export function SubmissionSupport({ onBack }: { onBack: () => void }) {
       >
         <div
           className={`w-4.5 h-4.5 rounded shrink-0 mt-px cursor-pointer flex items-center justify-center ${
-            agreed ? 'bg-blue' : 'border-[1.5px] border-navy/25'
+            agreed ? "bg-blue" : "border-[1.5px] border-navy/25"
           }`}
         >
-          {agreed && (
-            <Check size={12} color="white" strokeWidth={2.5} />
-          )}
+          {agreed && <Check size={12} color="white" strokeWidth={2.5} />}
         </div>
         <span className="text-[12.5px] text-navy/70 leading-[1.6]">
           위 소명서에 기재한 내용이 모두 사실임을 확인하며, 허위 이의제기 시 3년
@@ -108,7 +106,7 @@ export function SubmissionSupport({ onBack }: { onBack: () => void }) {
           >
             <div
               className={`w-4.5 h-4.5 rounded shrink-0 flex items-center justify-center cursor-pointer ${
-                checked[c.id] ? 'bg-blue' : 'border-[1.5px] border-navy/25'
+                checked[c.id] ? "bg-blue" : "border-[1.5px] border-navy/25"
               }`}
             >
               {checked[c.id] && (
@@ -117,7 +115,7 @@ export function SubmissionSupport({ onBack }: { onBack: () => void }) {
             </div>
             <span
               className={`text-[13px] transition-all duration-150 ${
-                checked[c.id] ? 'text-navy/35 line-through' : 'text-navy'
+                checked[c.id] ? "text-navy/35 line-through" : "text-navy"
               }`}
             >
               {c.label}
@@ -128,17 +126,17 @@ export function SubmissionSupport({ onBack }: { onBack: () => void }) {
 
       {/* Multi-bank guidance */}
       <div className="bg-navy/4 rounded-lg py-3.5 px-4 mb-6 text-[11.5px] text-navy/65 leading-[1.75]">
-        <b className="text-navy">최초로 정지를 신청한 은행부터 확인하세요.</b>{' '}
+        <b className="text-navy">최초로 정지를 신청한 은행부터 확인하세요.</b>{" "}
         여러 계좌가 묶였다면 처음 지급정지를 요청한 은행이 풀어줘야 하는 경우가
         많습니다.
         <b className="text-navy">
-          {' '}
+          {" "}
           여러 계좌면 순차가 아니라 동시에 접수하세요
-        </b>{' '}
+        </b>{" "}
         — 은행에 따라 심사 기간이 5일에서 28일까지 차이 나므로, 한 곳씩 기다리면
         기한을 넘길 수 있습니다.
         <b className="text-navy"> 창구에서 반려당하면</b> 서면 답변을 요구하고
-        금감원 1332를 함께 활용하세요.{' '}
+        금감원 1332를 함께 활용하세요.{" "}
         <b className="text-navy">돈을 임의로 돌려주지 마세요</b> — 직접 반환은
         자금세탁 가담 위험이 있으니 반드시 은행을 통해 기록을 남기며 반환하세요.
       </div>
@@ -179,8 +177,8 @@ export function SubmissionSupport({ onBack }: { onBack: () => void }) {
               key={s.id}
               className={`flex items-center gap-3 py-3 px-5 ${
                 i < STATUS_STAGES.length - 1
-                  ? 'border-b-[0.5px] border-navy/7'
-                  : ''
+                  ? "border-b-[0.5px] border-navy/7"
+                  : ""
               }`}
             >
               <span className="text-[9.5px] font-bold text-navy/50 bg-navy/6 py-0.5 px-1.75 rounded-[10px] whitespace-nowrap">
@@ -217,7 +215,9 @@ export function SubmissionSupport({ onBack }: { onBack: () => void }) {
         확인하시면 됩니다.
       </div>
 
-      <button className="btn-secondary" onClick={onBack}>← 이전</button>
+      <button className="btn-secondary" onClick={onBack}>
+        ← 이전
+      </button>
     </div>
-  );
+  )
 }

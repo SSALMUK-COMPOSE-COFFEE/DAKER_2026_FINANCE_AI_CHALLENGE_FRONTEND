@@ -200,7 +200,9 @@ export function DataUpload({
                         checked ? "bg-blue" : "border-[1.5px] border-navy/22"
                       }`}
                     >
-                      {checked && <Check size={12} color="white" strokeWidth={2.5} />}
+                      {checked && (
+                        <Check size={12} color="white" strokeWidth={2.5} />
+                      )}
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-1.5 mb-0.5">
@@ -211,9 +213,7 @@ export function DataUpload({
                         </span>
                         <span
                           className={`text-[13px] font-medium ${
-                            checked
-                              ? "text-navy/35 line-through"
-                              : "text-navy"
+                            checked ? "text-navy/35 line-through" : "text-navy"
                           }`}
                         >
                           {item.label}
@@ -273,9 +273,7 @@ export function DataUpload({
           }}
           onClick={() => inputRef.current?.click()}
           className={`border-[1.5px] border-dashed rounded-xl py-7 px-6 text-center cursor-pointer transition-all duration-150 mb-3.5 ${
-            dragging
-              ? "border-blue bg-blue/4"
-              : "border-navy/20 bg-navy/2"
+            dragging ? "border-blue bg-blue/4" : "border-navy/20 bg-navy/2"
           }`}
         >
           <input
@@ -301,9 +299,7 @@ export function DataUpload({
               <div
                 key={i}
                 className={`flex items-center gap-2.5 py-2.25 px-4 ${
-                  i < files.length - 1
-                    ? "border-b-[0.5px] border-navy/7"
-                    : ""
+                  i < files.length - 1 ? "border-b-[0.5px] border-navy/7" : ""
                 }`}
               >
                 <div className="flex-1">
@@ -315,7 +311,12 @@ export function DataUpload({
                 {f.status === "loading" ? (
                   <span className="text-[11px] text-blue">업로드 중…</span>
                 ) : (
-                  <CircleCheck size={16} className="text-blue" fill="rgba(61,111,166,0.12)" strokeWidth={1.75} />
+                  <CircleCheck
+                    size={16}
+                    className="text-blue"
+                    fill="rgba(61,111,166,0.12)"
+                    strokeWidth={1.75}
+                  />
                 )}
                 <button
                   onClick={() =>
@@ -356,7 +357,9 @@ export function DataUpload({
       </div>
 
       <div className="flex gap-2.5">
-        <button className="btn-secondary" onClick={onBack}>← 이전</button>
+        <button className="btn-secondary" onClick={onBack}>
+          ← 이전
+        </button>
         <button className="btn-primary text-sm py-3.25 px-8" onClick={onNext}>
           AI 분석 시작 →
         </button>

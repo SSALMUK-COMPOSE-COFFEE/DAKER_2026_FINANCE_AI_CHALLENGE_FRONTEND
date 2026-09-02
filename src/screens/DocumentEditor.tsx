@@ -49,7 +49,9 @@ export function DocumentEditor({
             소명서 초안 편집
           </h1>
           <div className="flex gap-2 flex-wrap">
-            <button className="btn-secondary text-[13px]" onClick={onBack}>← 이전</button>
+            <button className="btn-secondary text-[13px]" onClick={onBack}>
+              ← 이전
+            </button>
             <button className="btn-secondary text-[13px]">인쇄 미리보기</button>
             <button className="btn-primary text-[13px]" onClick={onNext}>
               완성 — 제출 지원으로

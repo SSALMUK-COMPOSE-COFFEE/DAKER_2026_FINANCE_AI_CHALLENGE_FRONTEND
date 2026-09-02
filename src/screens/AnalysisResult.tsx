@@ -257,7 +257,9 @@ export function AnalysisResult({
       </div>
 
       <div className="flex gap-2.5">
-        <button className="btn-secondary" onClick={onBack}>← 이전</button>
+        <button className="btn-secondary" onClick={onBack}>
+          ← 이전
+        </button>
         <button className="btn-primary" onClick={onNext}>
           이 결과로 소명서 초안 생성
         </button>

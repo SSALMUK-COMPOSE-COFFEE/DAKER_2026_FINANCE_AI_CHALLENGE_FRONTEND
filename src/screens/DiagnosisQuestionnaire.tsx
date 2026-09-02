@@ -142,7 +142,9 @@ export function DiagnosisQuestionnaire({
           className="w-full h-40 py-3.5 px-4 border-[0.5px] border-border rounded-[10px] text-[13.5px] text-navy bg-white outline-none resize-none leading-[1.7] box-border focus:border-blue/50 mb-6"
         />
         <div className="flex items-center gap-3">
-          <button className="btn-secondary" onClick={onBack}>← 이전</button>
+          <button className="btn-secondary" onClick={onBack}>
+            ← 이전
+          </button>
           <button className="btn-primary" onClick={() => setScreen(0)}>
             다음 →
           </button>
@@ -539,9 +541,7 @@ export function DiagnosisQuestionnaire({
             <div
               key={item.id}
               className={`flex items-center gap-2.5 py-1.75 ${
-                i < mustItems.length - 1
-                  ? "border-b-[0.5px] border-navy/7"
-                  : ""
+                i < mustItems.length - 1 ? "border-b-[0.5px] border-navy/7" : ""
               }`}
             >
               <span className="text-[9.5px] font-bold text-blue bg-blue/10 py-0.5 px-1.75 rounded-[10px] whitespace-nowrap">

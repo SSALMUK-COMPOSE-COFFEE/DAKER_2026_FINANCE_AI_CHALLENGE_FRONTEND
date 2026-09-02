@@ -1,4 +1,5 @@
-import { COLORS } from "@/styles/colors"
+import { Check, Clock, Pencil, Upload } from 'lucide-react';
+import { COLORS } from '@/styles/colors';
 
 export function SlideIllustration1() {
   return (
@@ -29,24 +30,9 @@ export function SlideIllustration1() {
         stroke="rgba(16,35,63,0.18)"
         strokeWidth="1"
       />
-      <line
-        x1="107"
-        y1="82"
-        x2="107"
-        y2="65"
-        stroke="rgba(16,35,63,0.35)"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-      <line
-        x1="107"
-        y1="82"
-        x2="118"
-        y2="78"
-        stroke="rgba(16,35,63,0.35)"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
+      <g transform="translate(93,68)">
+        <Clock size={28} color="rgba(16,35,63,0.4)" strokeWidth={1.75} />
+      </g>
       {/* Scribbled lines - manual writing */}
       <rect
         x="44"
@@ -81,25 +67,8 @@ export function SlideIllustration1() {
         fill="rgba(16,35,63,0.1)"
       />
       {/* Pencil icon */}
-      <g transform="translate(88,108) rotate(-30)">
-        <rect
-          x="0"
-          y="0"
-          width="8"
-          height="22"
-          rx="1.5"
-          fill={COLORS.warm}
-          opacity="0.7"
-        />
-        <polygon points="0,22 8,22 4,28" fill="rgba(16,35,63,0.35)" />
-        <rect
-          x="0"
-          y="0"
-          width="8"
-          height="5"
-          rx="1.5"
-          fill="rgba(16,35,63,0.2)"
-        />
+      <g transform="translate(80,104) rotate(-30 11 11)">
+        <Pencil size={22} color={COLORS.warm} strokeWidth={1.75} />
       </g>
       {/* Time label */}
       <rect
@@ -119,7 +88,7 @@ export function SlideIllustration1() {
         fill="rgba(16,35,63,0.55)"
         fontWeight="500"
       >
-        수 시간 소요
+        오래 걸려요
       </text>
 
       {/* Arrow */}
@@ -157,24 +126,9 @@ export function SlideIllustration1() {
         stroke="rgba(61,111,166,0.3)"
         strokeWidth="1"
       />
-      <line
-        x1="313"
-        y1="82"
-        x2="313"
-        y2="66"
-        stroke={COLORS.blue}
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-      <line
-        x1="313"
-        y1="82"
-        x2="322"
-        y2="86"
-        stroke={COLORS.blue}
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
+      <g transform="translate(299,68)">
+        <Clock size={28} color={COLORS.blue} strokeWidth={1.75} />
+      </g>
       {/* Clean document lines */}
       <rect
         x="250"
@@ -210,13 +164,9 @@ export function SlideIllustration1() {
       />
       {/* Check badge */}
       <circle cx="349" cy="116" r="10" fill={COLORS.blue} />
-      <path
-        d="M344.5 116.5L347.5 119.5L353.5 113"
-        stroke="white"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <g transform="translate(343,110)">
+        <Check size={12} color="white" strokeWidth={3} />
+      </g>
       {/* Time label */}
       <rect
         x="268"
@@ -235,13 +185,13 @@ export function SlideIllustration1() {
         fill={COLORS.blue}
         fontWeight="600"
       >
-        약 15분
+        빠르게 완성
       </text>
 
       {/* Labels */}
       <text
         x="107"
-        y="250"
+        y="262"
         textAnchor="middle"
         fontSize="11"
         fontFamily="'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif"
@@ -251,7 +201,7 @@ export function SlideIllustration1() {
       </text>
       <text
         x="313"
-        y="250"
+        y="262"
         textAnchor="middle"
         fontSize="11"
         fontFamily="'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif"
@@ -260,7 +210,7 @@ export function SlideIllustration1() {
         풀림 사용 시
       </text>
     </svg>
-  )
+  );
 }
 
 export function SlideIllustration2() {
@@ -325,26 +275,6 @@ export function SlideIllustration2() {
       >
         거래 내역
       </text>
-      <circle
-        cx="16"
-        cy="118"
-        r="10"
-        fill="rgba(16,35,63,0.08)"
-        stroke="rgba(16,35,63,0.15)"
-        strokeWidth="0.5"
-      />
-      <text
-        x="16"
-        y="122"
-        textAnchor="middle"
-        fontSize="9"
-        fontFamily="'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif"
-        fill="rgba(16,35,63,0.55)"
-        fontWeight="600"
-      >
-        1
-      </text>
-
       {/* Arrow 1 */}
       <path
         d="M124 125 L156 125"
@@ -369,22 +299,9 @@ export function SlideIllustration2() {
         stroke="rgba(61,111,166,0.2)"
         strokeWidth="1"
       />
-      <path
-        d="M185 115 L185 138M178 122 L185 115 L192 122"
-        stroke={COLORS.blue}
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <rect
-        x="176"
-        y="138"
-        width="18"
-        height="3"
-        rx="1.5"
-        fill={COLORS.blue}
-        opacity="0.5"
-      />
+      <g transform="translate(171,111)">
+        <Upload size={28} color={COLORS.blue} strokeWidth={1.75} />
+      </g>
       <text
         x="185"
         y="200"
@@ -395,19 +312,6 @@ export function SlideIllustration2() {
       >
         AI 분석
       </text>
-      <circle cx="237" cy="90" r="10" fill={COLORS.blue} />
-      <text
-        x="237"
-        y="94"
-        textAnchor="middle"
-        fontSize="9"
-        fontFamily="'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif"
-        fill="white"
-        fontWeight="600"
-      >
-        2
-      </text>
-
       {/* Arrow 2 */}
       <path
         d="M232 125 L264 125"
@@ -497,20 +401,8 @@ export function SlideIllustration2() {
       >
         소명서 완성
       </text>
-      <circle cx="258" cy="90" r="10" fill={COLORS.blue} />
-      <text
-        x="258"
-        y="94"
-        textAnchor="middle"
-        fontSize="9"
-        fontFamily="'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif"
-        fill="white"
-        fontWeight="600"
-      >
-        3
-      </text>
     </svg>
-  )
+  );
 }
 
 export function SlideIllustration3() {
@@ -575,13 +467,9 @@ export function SlideIllustration3() {
         fill="rgba(16,35,63,0.09)"
       />
       <circle cx="162" cy="76" r="14" fill="rgba(61,111,166,0.15)" />
-      <path
-        d="M156 76L160 80L168 72"
-        stroke={COLORS.blue}
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <g transform="translate(154,68)">
+        <Check size={16} color={COLORS.blue} strokeWidth={2.25} />
+      </g>
       {/* Document 2 */}
       <rect
         x="198"
@@ -634,13 +522,9 @@ export function SlideIllustration3() {
         fill="rgba(61,111,166,0.16)"
       />
       <circle cx="280" cy="64" r="14" fill={COLORS.blue} />
-      <path
-        d="M274 64L278 68L286 60"
-        stroke="white"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <g transform="translate(272,56)">
+        <Check size={16} color="white" strokeWidth={2.25} />
+      </g>
       {/* AI badge */}
       <rect
         x="134"
@@ -676,5 +560,5 @@ export function SlideIllustration3() {
         분석 근거 포함 완료
       </text>
     </svg>
-  )
+  );
 }
