@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Menu } from "lucide-react"
 import { Sidebar } from "@/components/Sidebar"
 import { OnboardingModal } from "@/components/OnboardingModal"
@@ -17,6 +17,11 @@ export default function App() {
   const [answers, setAnswers] = useState<Answers>({})
   const [dday, setDday] = useState<number | null>(null)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const mainRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    mainRef.current?.scrollTo(0, 0)
+  }, [step])
 
   return (
     <div className="h-screen overflow-hidden bg-page flex flex-col md:flex-row-reverse">
@@ -38,7 +43,10 @@ export default function App() {
           <Menu size={22} />
         </button>
       </div>
-      <main className="flex-1 overflow-y-auto">
+      <main
+        ref={mainRef}
+        className={`flex-1 ${mobileNavOpen ? "overflow-hidden md:overflow-y-auto" : "overflow-y-auto"}`}
+      >
         {step === 0 && <Landing onStart={() => setStep(1)} />}
         {step === 1 && (
           <DiagnosisQuestionnaire

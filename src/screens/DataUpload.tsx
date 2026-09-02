@@ -321,6 +321,7 @@ export function DataUpload({
                   onClick={() =>
                     setFiles((prev) => prev.filter((_, j) => j !== i))
                   }
+                  aria-label={`${f.name} 삭제`}
                   className="bg-transparent border-none cursor-pointer text-navy/30 text-base leading-none"
                 >
                   ×

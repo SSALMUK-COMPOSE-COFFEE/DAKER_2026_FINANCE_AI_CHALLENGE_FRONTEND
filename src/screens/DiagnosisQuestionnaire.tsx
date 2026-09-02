@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Check, CircleAlert, ArrowRight } from "lucide-react"
 import { QUESTIONS } from "@/data/questions"
 import { getEvidenceChecklist, CAT_LABELS } from "@/data/evidence"
@@ -31,6 +31,10 @@ export function DiagnosisQuestionnaire({
   const [screen, setScreen] = useState<Screen>("intro")
   const [freeText, setFreeText] = useState("")
   const [ans, setAns] = useState<Answers>({})
+
+  useEffect(() => {
+    document.querySelector("main")?.scrollTo(0, 0)
+  }, [screen])
 
   const set = (key: string, val: string | string[]) =>
     setAns((prev) => ({ ...prev, [key]: val }))

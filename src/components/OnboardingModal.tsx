@@ -30,6 +30,7 @@ export function OnboardingModal({ onClose }: { onClose: () => void }) {
         {/* Close button */}
         <button
           onClick={onClose}
+          aria-label="닫기"
           className="absolute top-5 right-5 bg-transparent border-none cursor-pointer text-navy/35 text-lg leading-none z-10 p-1"
         >
           ×
