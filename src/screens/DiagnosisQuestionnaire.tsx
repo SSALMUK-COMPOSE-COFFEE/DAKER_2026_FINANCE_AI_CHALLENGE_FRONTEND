@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
-import { Check, CircleAlert, ArrowRight } from "lucide-react"
+import { Check, CircleAlert, ArrowRight, Loader2, Sparkles } from "lucide-react"
 import { QUESTIONS } from "@/data/questions"
 import { getEvidenceChecklist, CAT_LABELS } from "@/data/evidence"
+import { api } from "@/api"
 import type { Answers } from "@/types"
 
 type Screen = "intro" | number | "oos" | "exit" | "police" | "warningStage" | "civil" | "moneyMismatch" | "selfIncrimination" | "result"
@@ -30,6 +31,9 @@ export function DiagnosisQuestionnaire({
 }) {
   const [screen, setScreen] = useState<Screen>("intro")
   const [freeText, setFreeText] = useState("")
+  const [parsing, setParsing] = useState(false)
+  const [intakeSummary, setIntakeSummary] = useState<string | null>(null)
+  const [intakeError, setIntakeError] = useState<string | null>(null)
   const [ans, setAns] = useState<Answers>({})
 
   useEffect(() => {
@@ -38,6 +42,28 @@ export function DiagnosisQuestionnaire({
 
   const set = (key: string, val: string | string[]) =>
     setAns((prev) => ({ ...prev, [key]: val }))
+
+  const submitIntake = async () => {
+    const text = freeText.trim()
+    if (!text) {
+      setScreen(0)
+      return
+    }
+    setParsing(true)
+    setIntakeError(null)
+    try {
+      const res = await api.parseIntake(text)
+      setAns((prev) => ({ ...res.answers, ...prev }))
+      setIntakeSummary(res.summary)
+    } catch (err) {
+      setIntakeError(
+        err instanceof Error ? err.message : "자동 채움에 실패했습니다.",
+      )
+    } finally {
+      setParsing(false)
+      setScreen(0)
+    }
+  }
 
   const advance = (qIdx: number, value?: string) => {
     const q = QUESTIONS[qIdx]
@@ -141,20 +167,41 @@ export function DiagnosisQuestionnaire({
           placeholder="예: 당근에서 아이폰 팔았는데 어제 은행에서 계좌 정지됐다고 문자가 왔어요..."
           className="w-full h-40 py-3.5 px-4 border-[0.5px] border-border rounded-[10px] text-[13.5px] text-navy bg-white outline-none resize-none leading-[1.7] box-border focus:border-blue/50 mb-6"
         />
-        <div className="flex items-center gap-3">
-          <button className="btn-secondary" onClick={onBack}>
+        <div className="flex flex-wrap items-center gap-3">
+          <button className="btn-secondary" onClick={onBack} disabled={parsing}>
             ← 이전
           </button>
-          <button className="btn-primary" onClick={() => setScreen(0)}>
-            다음 →
+          <button
+            className="btn-primary flex items-center gap-1.5"
+            onClick={() => void submitIntake()}
+            disabled={parsing}
+          >
+            {parsing ? (
+              <>
+                <Loader2 size={14} className="animate-spin" />
+                읽는 중…
+              </>
+            ) : (
+              <>
+                {freeText.trim() ? <Sparkles size={14} /> : null}
+                다음 →
+              </>
+            )}
           </button>
           <button
             className="text-[13px] text-navy/45 bg-transparent border-none cursor-pointer"
             onClick={() => setScreen(0)}
+            disabled={parsing}
           >
             건너뛰기
           </button>
         </div>
+        {freeText.trim() && !parsing && (
+          <p className="font-sans-kr text-[11.5px] text-navy/40 leading-[1.6] mt-2.5">
+            적어주신 내용을 먼저 읽고, 알아낼 수 있는 답변은 미리 채워둡니다.
+            채워진 답은 다음 화면에서 직접 고칠 수 있습니다.
+          </p>
+        )}
       </div>
     )
 
@@ -622,6 +669,34 @@ export function DiagnosisQuestionnaire({
           Q{qNum + 1} / {QUESTIONS.length}
         </span>
       </div>
+
+      {intakeSummary && (
+        <div className="bg-blue/5 border-[0.5px] border-blue/20 rounded-xl py-3.5 px-4 mb-6">
+          <div className="flex items-center gap-1.5 mb-1">
+            <Sparkles size={12} className="text-blue" />
+            <span className="text-[11px] text-blue font-semibold">
+              적어주신 내용에서 읽어낸 것
+            </span>
+            <button
+              onClick={() => setIntakeSummary(null)}
+              aria-label="닫기"
+              className="ml-auto bg-transparent border-none cursor-pointer text-navy/30 text-base leading-none"
+            >
+              ×
+            </button>
+          </div>
+          <div className="text-[11.5px] text-navy/60 leading-[1.6]">
+            {intakeSummary} 아래 답변이 미리 채워져 있다면 확인만 해주세요.
+            다르면 다시 고르시면 됩니다.
+          </div>
+        </div>
+      )}
+
+      {intakeError && (
+        <div className="bg-warm/6 border-[0.5px] border-warm/25 rounded-xl py-3 px-4 mb-6 text-[11.5px] text-navy/60 leading-[1.6]">
+          자동 채움을 쓰지 못했습니다 ({intakeError}). 질문에 직접 답해주세요.
+        </div>
+      )}
 
       <div className="text-[11.5px] font-semibold text-blue mb-2">{q.tag}</div>
       <h2

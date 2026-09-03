@@ -10,12 +10,17 @@ import { AnalysisResult } from '@/screens/AnalysisResult';
 import { DocumentEditor } from '@/screens/DocumentEditor';
 import { SubmissionSupport } from '@/screens/SubmissionSupport';
 import type { Answers } from '@/types';
+import type { AnalysisResponse, Transaction } from '@/api';
 
 export default function App() {
   const [step, setStep] = useState(0);
   const [showModal, setShowModal] = useState(true);
   const [answers, setAnswers] = useState<Answers>({});
   const [dday, setDday] = useState<number | null>(null);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [checkedEvidence, setCheckedEvidence] = useState<string[]>([]);
+  const [memo, setMemo] = useState('');
+  const [analysis, setAnalysis] = useState<AnalysisResponse | null>(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const mainRef = useRef<HTMLElement>(null);
 
@@ -65,11 +70,16 @@ export default function App() {
             answers={answers}
             onBack={() => setStep(1)}
             onNext={() => setStep(3)}
+            onTransactionsChange={setTransactions}
+            onCheckedEvidenceChange={setCheckedEvidence}
+            onMemoChange={setMemo}
           />
         )}
         {step === 3 && (
           <AnalysisResult
             answers={answers}
+            transactions={transactions}
+            onAnalysis={setAnalysis}
             onBack={() => setStep(2)}
             onNext={() => setStep(4)}
           />
@@ -77,6 +87,9 @@ export default function App() {
         {step === 4 && (
           <DocumentEditor
             answers={answers}
+            analysis={analysis}
+            checkedEvidence={checkedEvidence}
+            memo={memo}
             onBack={() => setStep(3)}
             onNext={() => setStep(5)}
           />

@@ -1,11 +1,19 @@
-import { useRef, useState } from "react"
-import { Check, CircleCheck } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
+import { Check, CircleAlert, CircleCheck } from "lucide-react"
 import { getEvidenceChecklist, CAT_LABELS } from "@/data/evidence"
 import { BANKS, BANK_DISCLOSURE_NOTE } from "@/data/bankRequirements"
 import { getLetterTemplate } from "@/data/letterTemplates"
+import { api, useAsync } from "@/api"
+import type { Transaction } from "@/api"
 import type { Answers, EvidenceCategory, Purpose, UploadedFile } from "@/types"
 
 const CAT_ORDER: EvidenceCategory[] = ["D", "A", "B", "C"]
+
+function formatSize(bytes: number) {
+  if (bytes >= 1024 * 1024) return `${(bytes / 1024 / 1024).toFixed(1)} MB`
+  if (bytes >= 1024) return `${Math.round(bytes / 1024)} KB`
+  return `${bytes} B`
+}
 
 function priorityClasses(p: string) {
   if (p === "필수") return "text-blue bg-blue/10"
@@ -17,22 +25,44 @@ export function DataUpload({
   answers,
   onBack,
   onNext,
+  onTransactionsChange,
+  onCheckedEvidenceChange,
+  onMemoChange,
 }: {
   answers: Answers
   onBack: () => void
   onNext: () => void
+  onTransactionsChange: (t: Transaction[]) => void
+  onCheckedEvidenceChange: (ids: string[]) => void
+  onMemoChange: (memo: string) => void
 }) {
   const [files, setFiles] = useState<UploadedFile[]>([])
   const [dragging, setDragging] = useState(false)
   const [memo, setMemo] = useState("")
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({})
   const [selectedBank, setSelectedBank] = useState("")
+  const [transactions, setTransactions] = useState<Transaction[]>([])
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const bank = BANKS.find((b) => b.name === selectedBank)
-  const letter = getLetterTemplate(answers.q3 as Purpose)
+  const [uploadError, setUploadError] = useState<string | null>(null)
 
-  const checklist = getEvidenceChecklist(answers)
+  const remote = useAsync(
+    () => api.evidenceChecklist(answers),
+    [JSON.stringify(answers)],
+  )
+  const banksRemote = useAsync(() => api.banks(), [])
+  const purpose = answers.q3 as Purpose ?? "없음"
+  const lettersRemote = useAsync(() => api.letters(), [])
+
+  const banks = banksRemote.data?.banks ?? BANKS
+  const disclosureNote =
+    banksRemote.data?.disclosure_note ?? BANK_DISCLOSURE_NOTE
+  const bank = banks.find((b) => b.name === selectedBank)
+  const letter =
+    lettersRemote.data?.find((l) => l.purpose === purpose) ??
+    getLetterTemplate(purpose)
+
+  const checklist = remote.data?.items ?? getEvidenceChecklist(answers)
   const mustItems = checklist.filter((c) => c.priority === "필수")
   const checkedMust = mustItems.filter((m) => checkedItems[m.id]).length
   const gaugePercent =
@@ -41,18 +71,68 @@ export function DataUpload({
       : 0
   const gaugeReady = gaugePercent >= 75
 
-  const addFile = (name: string) => {
-    setFiles((prev) => {
-      if (prev.find((f) => f.name === name)) return prev
-      return [...prev, { name, size: "2.3 MB", status: "loading" }]
-    })
-    setTimeout(
-      () =>
-        setFiles((prev) =>
-          prev.map((f) => (f.name === name ? { ...f, status: "done" } : f)),
-        ),
-      1100,
+  useEffect(() => {
+    onCheckedEvidenceChange(
+      Object.entries(checkedItems)
+        .filter(([, on]) => on)
+        .map(([id]) => id),
     )
+  }, [checkedItems, onCheckedEvidenceChange])
+
+  useEffect(() => {
+    onMemoChange(memo)
+  }, [memo, onMemoChange])
+
+  const addFiles = async (incoming: File[]) => {
+    const fresh = incoming.filter(
+      (f) => !files.some((existing) => existing.name === f.name),
+    )
+    if (fresh.length === 0) return
+
+    setUploadError(null)
+    setFiles((prev) => [
+      ...prev,
+      ...fresh.map((f) => ({
+        name: f.name,
+        size: formatSize(f.size),
+        status: "loading" as const,
+      })),
+    ])
+
+    try {
+      const res = await api.parseUploads(fresh)
+      const byName = new Map(res.files.map((p) => [p.name, p]))
+      setFiles((prev) =>
+        prev.map((f) => {
+          const parsed = byName.get(f.name)
+          if (!parsed) return f
+          return {
+            ...f,
+            size: formatSize(parsed.size),
+            kind: parsed.kind,
+            transactionCount: parsed.transaction_count,
+            error: parsed.error ?? undefined,
+            status: parsed.error ? "error" as const : "done" as const,
+          }
+        }),
+      )
+      setTransactions((prev) => {
+        const merged = [...prev, ...res.transactions]
+        onTransactionsChange(merged)
+        return merged
+      })
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "업로드에 실패했습니다."
+      setUploadError(message)
+      setFiles((prev) =>
+        prev.map((f) =>
+          fresh.some((n) => n.name === f.name)
+            ? { ...f, status: "error" as const, error: message }
+            : f,
+        ),
+      )
+    }
   }
 
   return (
@@ -116,7 +196,7 @@ export function DataUpload({
           className="w-full py-3 px-3.5 border-[0.5px] border-border rounded-[10px] text-[13.5px] text-navy outline-none bg-white box-border focus:border-blue/50"
         >
           <option value="">은행을 선택하세요</option>
-          {BANKS.map((b) => (
+          {banks.map((b) => (
             <option key={b.name} value={b.name}>
               {b.name}
             </option>
@@ -148,8 +228,8 @@ export function DataUpload({
                   {bank.name}은(는) 이의제기 요구서류를 공개하지 않고 있습니다
                 </div>
                 <div className="text-[11.5px] text-navy/55 leading-[1.6]">
-                  {BANK_DISCLOSURE_NOTE} 아래 체크리스트의 법정 필수 서류와,
-                  같은 유형에서 실제로 인정받은 자료로 준비해 주세요.
+                  {disclosureNote} 아래 체크리스트의 법정 필수 서류와, 같은
+                  유형에서 실제로 인정받은 자료로 준비해 주세요.
                 </div>
               </>
             )}
@@ -269,7 +349,7 @@ export function DataUpload({
           onDrop={(e) => {
             e.preventDefault()
             setDragging(false)
-            Array.from(e.dataTransfer.files).forEach((f) => addFile(f.name))
+            void addFiles(Array.from(e.dataTransfer.files))
           }}
           onClick={() => inputRef.current?.click()}
           className={`border-[1.5px] border-dashed rounded-xl py-7 px-6 text-center cursor-pointer transition-all duration-150 mb-3.5 ${
@@ -281,9 +361,7 @@ export function DataUpload({
             type="file"
             multiple
             className="hidden"
-            onChange={(e) =>
-              Array.from(e.target.files ?? []).forEach((f) => addFile(f.name))
-            }
+            onChange={(e) => void addFiles(Array.from(e.target.files ?? []))}
           />
           <div className="text-[13px] text-navy font-medium mb-0.75">
             파일을 끌어다 놓거나 클릭해서 선택
@@ -292,6 +370,12 @@ export function DataUpload({
             CSV, XLSX, PDF, JPG, PNG — 파일당 최대 20MB
           </div>
         </div>
+
+        {uploadError && (
+          <div className="bg-warm/6 border-[0.5px] border-warm/25 rounded-lg py-2.5 px-3.5 mb-3 text-[11.5px] text-navy/65 leading-[1.6]">
+            {uploadError}
+          </div>
+        )}
 
         {files.length > 0 && (
           <div className="card py-1 mb-4">
@@ -302,18 +386,32 @@ export function DataUpload({
                   i < files.length - 1 ? "border-b-[0.5px] border-navy/7" : ""
                 }`}
               >
-                <div className="flex-1">
-                  <div className="text-[12.5px] font-medium text-navy">
+                <div className="flex-1 min-w-0">
+                  <div className="text-[12.5px] font-medium text-navy truncate">
                     {f.name}
                   </div>
-                  <div className="text-[10.5px] text-navy/40">{f.size}</div>
+                  <div className="text-[10.5px] text-navy/40">
+                    {f.size}
+                    {f.transactionCount
+                      ? ` · 거래 ${f.transactionCount.toLocaleString()}건 인식`
+                      : ""}
+                  </div>
+                  {f.error && (
+                    <div className="text-[10.5px] text-warm leading-[1.5] mt-0.5">
+                      {f.error}
+                    </div>
+                  )}
                 </div>
                 {f.status === "loading" ? (
-                  <span className="text-[11px] text-blue">업로드 중…</span>
+                  <span className="text-[11px] text-blue shrink-0">
+                    분석 중…
+                  </span>
+                ) : f.status === "error" ? (
+                  <CircleAlert size={16} className="text-warm shrink-0" />
                 ) : (
                   <CircleCheck
                     size={16}
-                    className="text-blue"
+                    className="text-blue shrink-0"
                     fill="rgba(61,111,166,0.12)"
                     strokeWidth={1.75}
                   />
@@ -361,7 +459,11 @@ export function DataUpload({
           ← 이전
         </button>
         <button className="btn-primary text-sm py-3.25 px-8" onClick={onNext}>
-          AI 분석 시작 →
+          AI 분석 시작
+          {transactions.length > 0
+            ? ` (거래 ${transactions.length.toLocaleString()}건)`
+            : ""}{" "}
+          →
         </button>
       </div>
     </div>

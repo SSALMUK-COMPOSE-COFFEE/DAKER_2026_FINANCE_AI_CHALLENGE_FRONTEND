@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Check } from "lucide-react"
 import { BANKS } from "@/data/bankRequirements"
+import { api, useAsync } from "@/api"
 
 const CHECKLIST = [
   { id: "doc", label: "소명서 (풀림 AI 작성본)" },
@@ -33,6 +34,11 @@ export function SubmissionSupport({ onBack }: { onBack: () => void }) {
   const [checked, setChecked] = useState<Record<string, boolean>>({})
   const [agreed, setAgreed] = useState(false)
   const doneCount = Object.values(checked).filter(Boolean).length
+
+  const guide = useAsync(() => api.submission(), [])
+  const checklist = guide.data?.checklist ?? CHECKLIST
+  const stages = guide.data?.stages ?? STATUS_STAGES
+  const contacts = guide.data?.contacts ?? BANKS
 
   return (
     <div className="step-section max-w-175 mx-auto pt-8 px-5 pb-14 md:pt-14 md:px-12 md:pb-20">
@@ -93,10 +99,10 @@ export function SubmissionSupport({ onBack }: { onBack: () => void }) {
             제출 체크리스트
           </span>
           <span className="text-[11.5px] text-blue">
-            {doneCount}/{CHECKLIST.length} 완료
+            {doneCount}/{checklist.length} 완료
           </span>
         </div>
-        {CHECKLIST.map((c) => (
+        {checklist.map((c) => (
           <label
             key={c.id}
             onClick={() =>
@@ -147,7 +153,7 @@ export function SubmissionSupport({ onBack }: { onBack: () => void }) {
           주요 은행 이의제기 접수처
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {BANKS.map((b) => (
+          {contacts.map((b) => (
             <div key={b.name} className="card py-3.5 px-4">
               <div className="text-[13px] font-semibold text-navy mb-0.75">
                 {b.name}
@@ -172,13 +178,11 @@ export function SubmissionSupport({ onBack }: { onBack: () => void }) {
           단계를 따로 확인하세요.
         </div>
         <div className="card py-1 px-0">
-          {STATUS_STAGES.map((s, i) => (
+          {stages.map((s, i) => (
             <div
               key={s.id}
               className={`flex items-center gap-3 py-3 px-5 ${
-                i < STATUS_STAGES.length - 1
-                  ? "border-b-[0.5px] border-navy/7"
-                  : ""
+                i < stages.length - 1 ? "border-b-[0.5px] border-navy/7" : ""
               }`}
             >
               <span className="text-[9.5px] font-bold text-navy/50 bg-navy/6 py-0.5 px-1.75 rounded-[10px] whitespace-nowrap">

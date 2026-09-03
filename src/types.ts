@@ -1,7 +1,10 @@
 export interface UploadedFile {
   name: string
   size: string
-  status: "done" | "loading"
+  status: "done" | "loading" | "error"
+  kind?: "transactions" | "image" | "document" | "unknown"
+  transactionCount?: number
+  error?: string
 }
 
 export interface QOption {
