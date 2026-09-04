@@ -11,12 +11,6 @@ const LEGEND = [
   { dotClass: "bg-navy/25", label: "정상 수신 계좌" },
 ]
 
-const VERDICT_TONE: Record<string, string> = {
-  종착점: "text-blue bg-blue/10 border-blue/30",
-  판단보류: "text-navy/60 bg-navy/6 border-navy/20",
-  중계의심: "text-warm bg-warm/10 border-warm/30",
-}
-
 function FactRows({ rows }: { rows: Fact[] }) {
   return (
     <>
@@ -94,7 +88,6 @@ export function AnalysisResult({
     dealAmount > 0 && noticeAmount > 0 && dealAmount !== noticeAmount
 
   const facts = data?.facts.length ? data.facts : localFacts(answers)
-  const verdict = data?.verdict ?? "판단보류"
 
   return (
     <div className="step-section max-w-215 mx-auto pt-8 px-5 pb-14 md:pt-14 md:px-12 md:pb-20">
@@ -107,24 +100,15 @@ export function AnalysisResult({
         <h1 className="font-serif-kr text-[28px] font-bold text-navy tracking-[-0.01em]">
           AI 분석 결과
         </h1>
-        {loading ? (
+        {loading && (
           <span className="text-[11px] bg-navy/6 text-navy/50 border-[0.5px] border-navy/15 py-0.75 px-2.5 rounded-full font-semibold">
             분석 중…
-          </span>
-        ) : (
-          <span
-            className={`text-[11px] border-[0.5px] py-0.75 px-2.5 rounded-full font-semibold ${
-              VERDICT_TONE[verdict] ?? VERDICT_TONE.판단보류
-            }`}
-          >
-            {verdict}
-            {data ? ` · 신뢰도 ${Math.round(data.confidence * 100)}%` : ""}
           </span>
         )}
       </div>
       <p className="font-sans-kr text-sm text-navy/55 mb-6 leading-[1.7]">
-        {data?.summary ??
-          "문진 답변과 첨부 자료에서 사실관계를 추출하고, 4개 명제 (A. 거래 실재 · B. 물품 인도 · C. 계좌 정상성 · D. 절차 메타)로 구조화했습니다."}
+        문진 답변과 첨부 자료에서 사실관계를 추출하고, 4개 명제 (A. 거래 실재 ·
+        B. 물품 인도 · C. 계좌 정상성 · D. 절차 메타)로 구조화했습니다.
       </p>
 
       {error && (
@@ -138,18 +122,6 @@ export function AnalysisResult({
           <button className="btn-secondary text-[12px]" onClick={reload}>
             다시 시도
           </button>
-        </div>
-      )}
-
-      {data?.abstained && (
-        <div className="bg-navy/4 border-[0.5px] border-navy/12 rounded-xl py-4 px-5 mb-6">
-          <div className="text-[11px] text-navy/70 font-semibold mb-1">
-            판단을 보류했습니다
-          </div>
-          <div className="text-[11.5px] text-navy/60 leading-[1.6]">
-            {data.headline} 근거가 부족할 때는 결론을 단정하지 않습니다. 증거를
-            더 올리면 판정이 달라질 수 있습니다.
-          </div>
         </div>
       )}
 
@@ -254,19 +226,6 @@ export function AnalysisResult({
         </div>
 
         <div className="flex flex-col gap-2.5">
-          <div className="card py-4.5 px-5">
-            <div className="text-[11px] text-navy/40 mb-2.5 tracking-[0.04em]">
-              종합 판정
-            </div>
-            <div className="font-serif-kr text-[22px] font-bold text-blue mb-1">
-              {data?.headline ?? (loading ? "분석 중…" : "단순 경유 계좌")}
-            </div>
-            <div className="text-xs text-navy/55 leading-[1.6]">
-              {data?.summary ??
-                "의심 자금과 직접 거래 없음. 정상 사업 거래 패턴 확인. 소명 성공 가능성 높음."}
-            </div>
-          </div>
-
           <div className="card py-4.5 px-5">
             <div className="text-[11px] text-navy/40 mb-2.5">
               계좌 정상성 근거

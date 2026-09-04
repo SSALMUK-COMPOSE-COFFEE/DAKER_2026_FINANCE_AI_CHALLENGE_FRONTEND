@@ -1,6 +1,5 @@
 import type { Answers, EvidenceCategory, EvidenceItem } from "@/types"
 
-export type Verdict = "종착점" | "판단보류" | "중계의심"
 export type FindingVerdict = "정상" | "주의" | "확인필요"
 export type TxKind = "transfer" | "spend" | "unknown"
 export type ParsedFileKind = "transactions" | "image" | "document" | "unknown"
@@ -132,16 +131,11 @@ export interface TransactionGraphData {
 }
 
 export interface AnalysisResponse {
-  verdict: Verdict
-  headline: string
-  summary: string
-  confidence: number
-  abstained: boolean
-  metrics: Metrics
-  facts: Fact[]
-  signals: Signal[]
-  findings: EvidenceFinding[]
   account_normality: Fact[]
+  facts: Fact[]
+  findings: EvidenceFinding[]
+  signals: Signal[]
+  metrics: Metrics
   graph: TransactionGraphData
   notes: string[]
 }
@@ -177,7 +171,7 @@ export interface Persona {
   id: string
   title: string
   summary: string
-  expected_verdict: Verdict
+  expected_basis: Fact[]
   answers: Answers
   transactions: Transaction[]
 }
