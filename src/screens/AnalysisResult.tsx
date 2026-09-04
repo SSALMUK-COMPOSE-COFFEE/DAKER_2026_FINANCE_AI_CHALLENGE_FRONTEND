@@ -31,6 +31,17 @@ function FactRows({ rows }: { rows: Fact[] }) {
   )
 }
 
+function EmptyHint({ title, body }: { title: string; body: string }) {
+  return (
+    <div className="bg-navy/3 border-[0.5px] border-dashed border-navy/15 rounded-xl py-5 px-5">
+      <div className="text-[12px] font-semibold text-navy/70 mb-1.5">
+        {title}
+      </div>
+      <div className="text-[11.5px] text-navy/50 leading-[1.7]">{body}</div>
+    </div>
+  )
+}
+
 function localFacts(answers: Answers): Fact[] {
   return [
     {
@@ -88,6 +99,7 @@ export function AnalysisResult({
     dealAmount > 0 && noticeAmount > 0 && dealAmount !== noticeAmount
 
   const facts = data?.facts.length ? data.facts : localFacts(answers)
+  const noTransactions = transactions.length === 0
 
   return (
     <div className="step-section max-w-215 mx-auto pt-8 px-5 pb-14 md:pt-14 md:px-12 md:pb-20">
@@ -204,25 +216,34 @@ export function AnalysisResult({
         <div className="card pt-7 px-5 pb-5 md:px-7">
           <div className="text-xs text-navy/45 mb-4 tracking-[0.04em]">
             거래 흐름 시각화
-            {data && data.graph.nodes.length > 0
+            {!noTransactions && data && data.graph.nodes.length > 0
               ? ` · 계좌 ${data.graph.nodes.length}개`
               : ""}
           </div>
-          <TransactionGraph
-            width={440}
-            height={220}
-            detailed
-            animated
-            data={data?.graph}
-          />
-          <div className="flex flex-wrap gap-4 mt-4">
-            {LEGEND.map((l, i) => (
-              <div key={i} className="flex items-center gap-1.25">
-                <div className={`w-2 h-2 rounded-full ${l.dotClass}`} />
-                <span className="text-[10.5px] text-navy/50">{l.label}</span>
+          {noTransactions ? (
+            <EmptyHint
+              title="거래내역을 올리면 이 그림이 채워집니다"
+              body="증거 준비 단계에서 거래내역 파일을 올리면, 지목된 입금 건이 어디서 들어와 어디로 나갔는지를 계좌 단위로 그려 드립니다. 지급정지가 어떻게 번졌는지 설명하는 화면이며 정상 여부를 가리는 그림이 아닙니다."
+            />
+          ) : (
+            <>
+              <TransactionGraph
+                width={440}
+                height={220}
+                detailed
+                animated
+                data={data?.graph}
+              />
+              <div className="flex flex-wrap gap-4 mt-4">
+                {LEGEND.map((l, i) => (
+                  <div key={i} className="flex items-center gap-1.25">
+                    <div className={`w-2 h-2 rounded-full ${l.dotClass}`} />
+                    <span className="text-[10.5px] text-navy/50">{l.label}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </>
+          )}
         </div>
 
         <div className="flex flex-col gap-2.5">
@@ -230,17 +251,14 @@ export function AnalysisResult({
             <div className="text-[11px] text-navy/40 mb-2.5">
               계좌 정상성 근거
             </div>
-            <FactRows
-              rows={
-                data?.account_normality.length
-                  ? data.account_normality
-                  : [
-                      { label: "계좌 개설 연수", value: "5년 이상" },
-                      { label: "자동이체 반복 개월수", value: "37개월" },
-                      { label: "평소 패턴과의 이탈도", value: "낮음" },
-                    ]
-              }
-            />
+            {noTransactions ? (
+              <EmptyHint
+                title="거래내역을 올리면 이 지표가 채워집니다"
+                body="계좌 개설 경과 기간, 급여 입금 주기성, 자동이체 반복성, 평소 패턴과의 이탈도를 계산해 드립니다. 통신비·공과금 자동이체처럼 오래 반복된 흐름은 소액 간소화 트랙의 생계 연관성 근거가 됩니다."
+              />
+            ) : (
+              <FactRows rows={data?.account_normality ?? []} />
+            )}
           </div>
         </div>
       </div>
