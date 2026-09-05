@@ -1,7 +1,7 @@
-import { useEffect } from "react"
+import { useState } from "react"
 import { TransactionGraph } from "@/components/TransactionGraph"
 import { CAT_LABELS } from "@/data/evidence"
-import { api, useAsync } from "@/api"
+import { api } from "@/api"
 import type { AnalysisResponse, Fact, Transaction } from "@/api"
 import type { Answers } from "@/types"
 
@@ -67,24 +67,35 @@ function localFacts(answers: Answers): Fact[] {
 export function AnalysisResult({
   answers,
   transactions,
+  analysis,
   onAnalysis,
   onBack,
   onNext,
 }: {
   answers: Answers
   transactions: Transaction[]
+  analysis: AnalysisResponse | null
   onAnalysis: (a: AnalysisResponse | null) => void
   onBack: () => void
   onNext: () => void
 }) {
-  const { data, error, loading, reload } = useAsync<AnalysisResponse>(
-    () => api.analyze(answers, transactions),
-    [JSON.stringify(answers), transactions.length],
-  )
+  const [retrying, setRetrying] = useState(false)
+  const [retryError, setRetryError] = useState<string | null>(null)
+  const data = analysis
 
-  useEffect(() => {
-    onAnalysis(data)
-  }, [data, onAnalysis])
+  const reload = async () => {
+    setRetrying(true)
+    setRetryError(null)
+    try {
+      onAnalysis(await api.analyze(answers, transactions))
+    } catch (err) {
+      setRetryError(
+        err instanceof Error ? err.message : "요청에 실패했습니다.",
+      )
+    } finally {
+      setRetrying(false)
+    }
+  }
 
   const nameMismatch = answers.q6 === "다름"
   const dealAmount = Number(answers.q7_dealAmount ?? 0)
@@ -107,7 +118,7 @@ export function AnalysisResult({
         <h1 className="font-serif-kr text-[28px] font-bold text-navy tracking-[-0.01em]">
           AI 분석 결과
         </h1>
-        {loading ? (
+        {retrying ? (
           <span className="text-[11px] bg-navy/6 text-navy/50 border-[0.5px] border-navy/15 py-0.75 px-2.5 rounded-full font-semibold">
             분석 중…
           </span>
@@ -127,15 +138,18 @@ export function AnalysisResult({
           "문진 답변과 첨부 자료에서 사실관계를 추출하고, 4개 명제 (A. 거래 실재 · B. 물품 인도 · C. 계좌 정상성 · D. 절차 메타)로 구조화했습니다."}
       </p>
 
-      {error && (
+      {retryError && (
         <div className="bg-warm/6 border-[0.5px] border-warm/25 rounded-xl py-4 px-5 mb-6">
           <div className="text-[11px] text-warm font-semibold mb-1">
             분석 서버에 연결하지 못했습니다
           </div>
           <div className="text-[11.5px] text-navy/60 leading-[1.6] mb-2.5">
-            {error} — 아래 내용은 문진 답변만으로 구성한 임시 결과입니다.
+            {retryError} — 아래 내용은 문진 답변만으로 구성한 임시 결과입니다.
           </div>
-          <button className="btn-secondary text-[12px]" onClick={reload}>
+          <button
+            className="btn-secondary text-[12px]"
+            onClick={() => void reload()}
+          >
             다시 시도
           </button>
         </div>
@@ -259,7 +273,7 @@ export function AnalysisResult({
               종합 판정
             </div>
             <div className="font-serif-kr text-[22px] font-bold text-blue mb-1">
-              {data?.headline ?? (loading ? "분석 중…" : "단순 경유 계좌")}
+              {data?.headline ?? (retrying ? "분석 중…" : "단순 경유 계좌")}
             </div>
             <div className="text-xs text-navy/55 leading-[1.6]">
               {data?.summary ??
@@ -344,7 +358,7 @@ export function AnalysisResult({
         <button className="btn-secondary" onClick={onBack}>
           ← 이전
         </button>
-        <button className="btn-primary" onClick={onNext} disabled={loading}>
+        <button className="btn-primary" onClick={onNext} disabled={retrying}>
           이 결과로 소명서 초안 생성
         </button>
       </div>
