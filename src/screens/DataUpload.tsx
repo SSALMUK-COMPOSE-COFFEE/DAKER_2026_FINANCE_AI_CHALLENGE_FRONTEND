@@ -1,24 +1,24 @@
-import { useEffect, useRef, useState } from "react"
-import { Check, CircleAlert, CircleCheck } from "lucide-react"
-import { getEvidenceChecklist, CAT_LABELS } from "@/data/evidence"
-import { BANKS, BANK_DISCLOSURE_NOTE } from "@/data/bankRequirements"
-import { getLetterTemplate } from "@/data/letterTemplates"
-import { api, useAsync } from "@/api"
-import type { Transaction } from "@/api"
-import type { Answers, EvidenceCategory, Purpose, UploadedFile } from "@/types"
+import { useEffect, useRef, useState } from 'react';
+import { Check, CircleAlert, CircleCheck } from 'lucide-react';
+import { getEvidenceChecklist, CAT_LABELS } from '@/data/evidence';
+import { BANKS, BANK_DISCLOSURE_NOTE } from '@/data/bankRequirements';
+import { getLetterTemplate } from '@/data/letterTemplates';
+import { api, useAsync } from '@/api';
+import type { AnalysisResponse, Transaction } from '@/api';
+import type { Answers, EvidenceCategory, Purpose, UploadedFile } from '@/types';
 
-const CAT_ORDER: EvidenceCategory[] = ["D", "A", "B", "C"]
+const CAT_ORDER: EvidenceCategory[] = ['D', 'A', 'B', 'C'];
 
 function formatSize(bytes: number) {
-  if (bytes >= 1024 * 1024) return `${(bytes / 1024 / 1024).toFixed(1)} MB`
-  if (bytes >= 1024) return `${Math.round(bytes / 1024)} KB`
-  return `${bytes} B`
+  if (bytes >= 1024 * 1024) return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+  if (bytes >= 1024) return `${Math.round(bytes / 1024)} KB`;
+  return `${bytes} B`;
 }
 
 function priorityClasses(p: string) {
-  if (p === "필수") return "text-blue bg-blue/10"
-  if (p === "권장") return "text-navy/60 bg-navy/8"
-  return "text-warm bg-warm/10"
+  if (p === '필수') return 'text-blue bg-blue/10';
+  if (p === '권장') return 'text-navy/60 bg-navy/8';
+  return 'text-warm bg-warm/10';
 }
 
 export function DataUpload({
@@ -28,112 +28,134 @@ export function DataUpload({
   onTransactionsChange,
   onCheckedEvidenceChange,
   onMemoChange,
+  onAnalysisReady,
 }: {
-  answers: Answers
-  onBack: () => void
-  onNext: () => void
-  onTransactionsChange: (t: Transaction[]) => void
-  onCheckedEvidenceChange: (ids: string[]) => void
-  onMemoChange: (memo: string) => void
+  answers: Answers;
+  onBack: () => void;
+  onNext: () => void;
+  onTransactionsChange: (t: Transaction[]) => void;
+  onCheckedEvidenceChange: (ids: string[]) => void;
+  onMemoChange: (memo: string) => void;
+  onAnalysisReady: (a: AnalysisResponse) => void;
 }) {
-  const [files, setFiles] = useState<UploadedFile[]>([])
-  const [dragging, setDragging] = useState(false)
-  const [memo, setMemo] = useState("")
-  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({})
-  const [selectedBank, setSelectedBank] = useState("")
-  const [transactions, setTransactions] = useState<Transaction[]>([])
-  const inputRef = useRef<HTMLInputElement>(null)
+  const [files, setFiles] = useState<UploadedFile[]>([]);
+  const [dragging, setDragging] = useState(false);
+  const [memo, setMemo] = useState('');
+  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
+  const [selectedBank, setSelectedBank] = useState('');
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const [uploadError, setUploadError] = useState<string | null>(null)
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const remote = useAsync(
     () => api.evidenceChecklist(answers),
     [JSON.stringify(answers)],
-  )
-  const banksRemote = useAsync(() => api.banks(), [])
-  const purpose = answers.q3 as Purpose ?? "없음"
-  const lettersRemote = useAsync(() => api.letters(), [])
+  );
+  const banksRemote = useAsync(() => api.banks(), []);
+  const purpose = (answers.q3 as Purpose) ?? '없음';
+  const lettersRemote = useAsync(() => api.letters(), []);
 
-  const banks = banksRemote.data?.banks ?? BANKS
+  const banks = banksRemote.data?.banks ?? BANKS;
   const disclosureNote =
-    banksRemote.data?.disclosure_note ?? BANK_DISCLOSURE_NOTE
-  const bank = banks.find((b) => b.name === selectedBank)
+    banksRemote.data?.disclosure_note ?? BANK_DISCLOSURE_NOTE;
+  const bank = banks.find((b) => b.name === selectedBank);
   const letter =
     lettersRemote.data?.find((l) => l.purpose === purpose) ??
-    getLetterTemplate(purpose)
+    getLetterTemplate(purpose);
 
-  const checklist = remote.data?.items ?? getEvidenceChecklist(answers)
-  const mustItems = checklist.filter((c) => c.priority === "필수")
-  const checkedMust = mustItems.filter((m) => checkedItems[m.id]).length
+  const checklist = remote.data?.items ?? getEvidenceChecklist(answers);
+  const mustItems = checklist.filter((c) => c.priority === '필수');
+  const checkedMust = mustItems.filter((m) => checkedItems[m.id]).length;
   const gaugePercent =
     mustItems.length > 0
       ? Math.round((checkedMust / mustItems.length) * 100)
-      : 0
-  const gaugeReady = gaugePercent >= 75
+      : 0;
+  const gaugeReady = gaugePercent >= 75;
 
   useEffect(() => {
     onCheckedEvidenceChange(
       Object.entries(checkedItems)
         .filter(([, on]) => on)
         .map(([id]) => id),
-    )
-  }, [checkedItems, onCheckedEvidenceChange])
+    );
+  }, [checkedItems, onCheckedEvidenceChange]);
 
   useEffect(() => {
-    onMemoChange(memo)
-  }, [memo, onMemoChange])
+    onMemoChange(memo);
+  }, [memo, onMemoChange]);
 
   const addFiles = async (incoming: File[]) => {
     const fresh = incoming.filter(
       (f) => !files.some((existing) => existing.name === f.name),
-    )
-    if (fresh.length === 0) return
+    );
+    if (fresh.length === 0) return;
 
-    setUploadError(null)
+    setUploadError(null);
     setFiles((prev) => [
       ...prev,
       ...fresh.map((f) => ({
         name: f.name,
         size: formatSize(f.size),
-        status: "loading" as const,
+        status: 'loading' as const,
       })),
-    ])
+    ]);
 
     try {
-      const res = await api.parseUploads(fresh)
-      const byName = new Map(res.files.map((p) => [p.name, p]))
+      const res = await api.parseUploads(fresh);
+      const byName = new Map(res.files.map((p) => [p.name, p]));
       setFiles((prev) =>
         prev.map((f) => {
-          const parsed = byName.get(f.name)
-          if (!parsed) return f
+          const parsed = byName.get(f.name);
+          if (!parsed) return f;
           return {
             ...f,
             size: formatSize(parsed.size),
             kind: parsed.kind,
             transactionCount: parsed.transaction_count,
             error: parsed.error ?? undefined,
-            status: parsed.error ? "error" as const : "done" as const,
-          }
+            status: parsed.error ? ('error' as const) : ('done' as const),
+          };
         }),
-      )
+      );
       setTransactions((prev) => {
-        const merged = [...prev, ...res.transactions]
-        onTransactionsChange(merged)
-        return merged
-      })
+        const merged = [...prev, ...res.transactions];
+        onTransactionsChange(merged);
+        return merged;
+      });
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : "업로드에 실패했습니다."
-      setUploadError(message)
+        err instanceof Error ? err.message : '업로드에 실패했습니다.';
+      setUploadError(message);
       setFiles((prev) =>
         prev.map((f) =>
           fresh.some((n) => n.name === f.name)
-            ? { ...f, status: "error" as const, error: message }
+            ? { ...f, status: 'error' as const, error: message }
             : f,
         ),
-      )
+      );
     }
-  }
+  };
+
+  const startAnalysis = async () => {
+    setSubmitError(null);
+    setSubmitting(true);
+    try {
+      // const result = await api.analyze(answers, transactions)
+      // onAnalysisReady(result)
+
+      console.log('answers, transactions', answers, transactions);
+      onNext();
+    } catch (err) {
+      setSubmitError(
+        err instanceof Error ? err.message : '분석 요청에 실패했습니다.',
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div className="step-section max-w-175 mx-auto pt-8 px-5 pb-14 md:pt-14 md:px-12 md:pb-20">
@@ -158,21 +180,21 @@ export function DataUpload({
           </span>
           <span
             className={`text-[12.5px] font-bold ${
-              gaugeReady ? "text-blue" : "text-navy/45"
+              gaugeReady ? 'text-blue' : 'text-navy/45'
             }`}
           >
-            {gaugePercent}% —{" "}
+            {gaugePercent}% —{' '}
             {gaugePercent >= 100
-              ? "5영업일 트랙 진입 가능"
+              ? '5영업일 트랙 진입 가능'
               : gaugeReady
-                ? "거의 준비됐어요"
+                ? '거의 준비됐어요'
                 : `필수 ${checkedMust}/${mustItems.length} 확인됨`}
           </span>
         </div>
         <div className="h-1.5 bg-navy/8 rounded-[3px] overflow-hidden">
           <div
             className={`h-full rounded-[3px] transition-[width] duration-300 ease-in-out ${
-              gaugeReady ? "bg-blue" : "bg-sky"
+              gaugeReady ? 'bg-blue' : 'bg-sky'
             }`}
             style={{ width: `${gaugePercent}%` }}
           />
@@ -214,8 +236,8 @@ export function DataUpload({
                     key={i}
                     className={`text-[13px] text-navy/65 py-1.5 ${
                       i < bank.requirements!.length - 1
-                        ? "border-b-[0.5px] border-navy/7"
-                        : ""
+                        ? 'border-b-[0.5px] border-navy/7'
+                        : ''
                     }`}
                   >
                     {r}
@@ -239,9 +261,9 @@ export function DataUpload({
 
       {/* Evidence checklist by category */}
       {CAT_ORDER.map((cat) => {
-        const items = checklist.filter((c) => c.category === cat)
-        if (items.length === 0) return null
-        const catInfo = CAT_LABELS[cat]
+        const items = checklist.filter((c) => c.category === cat);
+        if (items.length === 0) return null;
+        const catInfo = CAT_LABELS[cat];
         return (
           <div key={cat} className="mb-4.5">
             <div className="flex items-center gap-2 mb-2.5">
@@ -259,7 +281,7 @@ export function DataUpload({
             </div>
             <div className="card py-1 px-0">
               {items.map((item, i) => {
-                const checked = !!checkedItems[item.id]
+                const checked = !!checkedItems[item.id];
                 return (
                   <label
                     key={item.id}
@@ -271,13 +293,13 @@ export function DataUpload({
                     }
                     className={`flex items-start gap-3 py-2.75 px-4 cursor-pointer ${
                       i < items.length - 1
-                        ? "border-b-[0.5px] border-navy/7"
-                        : ""
+                        ? 'border-b-[0.5px] border-navy/7'
+                        : ''
                     }`}
                   >
                     <div
                       className={`w-4.5 h-4.5 rounded shrink-0 mt-px cursor-pointer flex items-center justify-center ${
-                        checked ? "bg-blue" : "border-[1.5px] border-navy/22"
+                        checked ? 'bg-blue' : 'border-[1.5px] border-navy/22'
                       }`}
                     >
                       {checked && (
@@ -293,7 +315,7 @@ export function DataUpload({
                         </span>
                         <span
                           className={`text-[13px] font-medium ${
-                            checked ? "text-navy/35 line-through" : "text-navy"
+                            checked ? 'text-navy/35 line-through' : 'text-navy'
                           }`}
                         >
                           {item.label}
@@ -304,11 +326,11 @@ export function DataUpload({
                       </span>
                     </div>
                   </label>
-                )
+                );
               })}
             </div>
           </div>
-        )
+        );
       })}
 
       {/* Issuance request letter */}
@@ -342,18 +364,18 @@ export function DataUpload({
         </div>
         <div
           onDragOver={(e) => {
-            e.preventDefault()
-            setDragging(true)
+            e.preventDefault();
+            setDragging(true);
           }}
           onDragLeave={() => setDragging(false)}
           onDrop={(e) => {
-            e.preventDefault()
-            setDragging(false)
-            void addFiles(Array.from(e.dataTransfer.files))
+            e.preventDefault();
+            setDragging(false);
+            void addFiles(Array.from(e.dataTransfer.files));
           }}
           onClick={() => inputRef.current?.click()}
           className={`border-[1.5px] border-dashed rounded-xl py-7 px-6 text-center cursor-pointer transition-all duration-150 mb-3.5 ${
-            dragging ? "border-blue bg-blue/4" : "border-navy/20 bg-navy/2"
+            dragging ? 'border-blue bg-blue/4' : 'border-navy/20 bg-navy/2'
           }`}
         >
           <input
@@ -383,7 +405,7 @@ export function DataUpload({
               <div
                 key={i}
                 className={`flex items-center gap-2.5 py-2.25 px-4 ${
-                  i < files.length - 1 ? "border-b-[0.5px] border-navy/7" : ""
+                  i < files.length - 1 ? 'border-b-[0.5px] border-navy/7' : ''
                 }`}
               >
                 <div className="flex-1 min-w-0">
@@ -394,7 +416,7 @@ export function DataUpload({
                     {f.size}
                     {f.transactionCount
                       ? ` · 거래 ${f.transactionCount.toLocaleString()}건 인식`
-                      : ""}
+                      : ''}
                   </div>
                   {f.error && (
                     <div className="text-[10.5px] text-warm leading-[1.5] mt-0.5">
@@ -402,11 +424,11 @@ export function DataUpload({
                     </div>
                   )}
                 </div>
-                {f.status === "loading" ? (
+                {f.status === 'loading' ? (
                   <span className="text-[11px] text-blue shrink-0">
                     분석 중…
                   </span>
-                ) : f.status === "error" ? (
+                ) : f.status === 'error' ? (
                   <CircleAlert size={16} className="text-warm shrink-0" />
                 ) : (
                   <CircleCheck
@@ -454,18 +476,38 @@ export function DataUpload({
         </div>
       </div>
 
+      {submitError && (
+        <div className="bg-warm/6 border-[0.5px] border-warm/25 rounded-lg py-2.5 px-3.5 mb-3 text-[11.5px] text-navy/65 leading-[1.6]">
+          {submitError}
+        </div>
+      )}
+
       <div className="flex gap-2.5">
-        <button className="btn-secondary" onClick={onBack}>
+        <button
+          className="btn-secondary"
+          onClick={onBack}
+          disabled={submitting}
+        >
           ← 이전
         </button>
-        <button className="btn-primary text-sm py-3.25 px-8" onClick={onNext}>
-          AI 분석 시작
-          {transactions.length > 0
-            ? ` (거래 ${transactions.length.toLocaleString()}건)`
-            : ""}{" "}
-          →
+        <button
+          className="btn-primary text-sm py-3.25 px-8 disabled:opacity-60"
+          onClick={() => void startAnalysis()}
+          disabled={submitting}
+        >
+          {submitting ? (
+            '전송 중…'
+          ) : (
+            <>
+              AI 분석 시작
+              {transactions.length > 0
+                ? ` (거래 ${transactions.length.toLocaleString()}건)`
+                : ''}{' '}
+              →
+            </>
+          )}
         </button>
       </div>
     </div>
-  )
+  );
 }

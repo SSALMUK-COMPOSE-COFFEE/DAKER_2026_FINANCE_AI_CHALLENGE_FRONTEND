@@ -73,12 +73,14 @@ export default function App() {
             onTransactionsChange={setTransactions}
             onCheckedEvidenceChange={setCheckedEvidence}
             onMemoChange={setMemo}
+            onAnalysisReady={setAnalysis}
           />
         )}
         {step === 3 && (
           <AnalysisResult
             answers={answers}
             transactions={transactions}
+            analysis={analysis}
             onAnalysis={setAnalysis}
             onBack={() => setStep(2)}
             onNext={() => setStep(4)}
