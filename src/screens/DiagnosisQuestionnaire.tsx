@@ -46,6 +46,7 @@ export function DiagnosisQuestionnaire({
   onAnswersChange: (a: Answers) => void;
 }) {
   const [screen, setScreen] = useState<Screen>('intro');
+  const [returnTo, setReturnTo] = useState<Screen>('intro');
   const [freeText, setFreeText] = useState('');
   const [parsing, setParsing] = useState(false);
   const [intakeSummary, setIntakeSummary] = useState<string | null>(null);
@@ -81,24 +82,29 @@ export function DiagnosisQuestionnaire({
     }
   };
 
+  const branch = (to: Screen) => {
+    setReturnTo(screen);
+    setScreen(to);
+  };
+
   const advance = (qIdx: number, value?: string) => {
     const q = QUESTIONS[qIdx];
     if (q.id === 'q1') {
       if (value === '경찰') {
-        setScreen('police');
+        branch('police');
         return;
       }
       if (value === '경보') {
-        setScreen('warningStage');
+        branch('warningStage');
         return;
       }
       if (value === '민사') {
-        setScreen('civil');
+        branch('civil');
         return;
       }
     }
     if (q.id === 'q5' && value === '더받음') {
-      setScreen('moneyMismatch');
+      branch('moneyMismatch');
       return;
     }
     if (qIdx === QUESTIONS.length - 1) {
@@ -127,11 +133,11 @@ export function DiagnosisQuestionnaire({
   const handleQ8Next = (qIdx: number) => {
     const selected = (ans.q8 as string[]) ?? [];
     if (selected.includes('접근매체양도')) {
-      setScreen('exit');
+      branch('exit');
       return;
     }
     if (selected.some((v) => SELF_INCRIMINATION_VALUES.includes(v))) {
-      setScreen('selfIncrimination');
+      branch('selfIncrimination');
       return;
     }
     advance(qIdx);
@@ -249,8 +255,8 @@ export function DiagnosisQuestionnaire({
             조사당한 사례가 있습니다. 미리 준비해 가야 합니다.
           </div>
         </div>
-        <button className="btn-secondary" onClick={() => setScreen('intro')}>
-          ← 처음으로 돌아가기
+        <button className="btn-secondary" onClick={() => setScreen(returnTo)}>
+          ← 이전
         </button>
       </div>
     );
@@ -289,8 +295,8 @@ export function DiagnosisQuestionnaire({
           계좌가 실제로 묶이면 그때 다시 오세요. 저장해 두신 자료로 바로
           소명서를 만들 수 있습니다.
         </p>
-        <button className="btn-secondary" onClick={() => setScreen('intro')}>
-          ← 처음으로 돌아가기
+        <button className="btn-secondary" onClick={() => setScreen(returnTo)}>
+          ← 이전
         </button>
       </div>
     );
@@ -311,8 +317,8 @@ export function DiagnosisQuestionnaire({
           답변서 제출 기한이 정해져 있는 경우가 많으니, 서류에 적힌 기한을 먼저
           확인하시고 법률구조공단(132) 또는 변호사 상담을 받아보시길 권합니다.
         </p>
-        <button className="btn-secondary" onClick={() => setScreen('intro')}>
-          ← 처음으로 돌아가기
+        <button className="btn-secondary" onClick={() => setScreen(returnTo)}>
+          ← 이전
         </button>
       </div>
     );
@@ -373,8 +379,8 @@ export function DiagnosisQuestionnaire({
           법률구조공단(132) 또는 변호사와 먼저 상담해 어떤 사실관계를 어떻게
           소명할지 정하신 뒤 진행하시길 권합니다.
         </p>
-        <button className="btn-secondary" onClick={() => setScreen('intro')}>
-          ← 처음으로 돌아가기
+        <button className="btn-secondary" onClick={() => setScreen(returnTo)}>
+          ← 이전
         </button>
       </div>
     );
@@ -446,8 +452,8 @@ export function DiagnosisQuestionnaire({
               </div>
             ))}
           </div>
-          <button className="btn-secondary" onClick={() => setScreen('intro')}>
-            ← 처음으로 돌아가기
+          <button className="btn-secondary" onClick={() => setScreen(returnTo)}>
+            ← 이전
           </button>
         </div>
       </div>
@@ -470,8 +476,8 @@ export function DiagnosisQuestionnaire({
           <br />이 상황은 법률 전문가의 개인 상담이 필요합니다.
           법률구조공단(132)에서 무료 상담을 받으실 수 있습니다.
         </p>
-        <button className="btn-secondary" onClick={() => setScreen('intro')}>
-          ← 처음으로 돌아가기
+        <button className="btn-secondary" onClick={() => setScreen(returnTo)}>
+          ← 이전
         </button>
       </div>
     );
@@ -789,7 +795,7 @@ export function DiagnosisQuestionnaire({
           <div className="flex gap-2">
             <button
               className="btn-secondary text-[13px]"
-              onClick={() => setScreen('oos')}
+              onClick={() => branch('oos')}
             >
               예, 그런 신호가 있었습니다
             </button>
