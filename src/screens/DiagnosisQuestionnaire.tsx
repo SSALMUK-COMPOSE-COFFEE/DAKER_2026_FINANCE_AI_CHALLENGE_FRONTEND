@@ -97,7 +97,7 @@ export function DiagnosisQuestionnaire({
       setAns(samplePersona.answers);
       setIntakeSummary(samplePersona.summary);
       onSampleMode(true);
-      finishWith(samplePersona.answers);
+      setScreen(0);
       return;
     }
     onSampleMode(false);
