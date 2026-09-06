@@ -145,10 +145,25 @@ export function DiagnosisQuestionnaire({
 
   const q = typeof screen === 'number' ? QUESTIONS[screen] : null;
 
+  const dateOrderError = (id: 'q9' | 'q10_date'): string | null => {
+    const deposit = ans.q7_date as string | undefined;
+    const freeze = ans.q9 as string | undefined;
+    const notice = ans.q10_date as string | undefined;
+    if (id === 'q9' && freeze && deposit && freeze < deposit)
+      return '계좌 정지일이 입금일보다 앞설 수 없습니다.';
+    if (id === 'q10_date' && notice && freeze && notice < freeze)
+      return '공고 통지일이 계좌 정지일보다 앞설 수 없습니다.';
+    if (id === 'q10_date' && notice && deposit && notice < deposit)
+      return '공고 통지일이 입금일보다 앞설 수 없습니다.';
+    return null;
+  };
+
   const canAdvance = () => {
     if (!q) return false;
-    if (q.type === 'date')
-      return q.id === 'q10' ? true : !!(ans[q.id] as string);
+    if (q.type === 'date') {
+      if (q.id === 'q10') return true;
+      return !!(ans[q.id] as string) && !dateOrderError('q9');
+    }
     if (q.type === 'caseDetails') {
       return (
         !!ans.q7_date &&
@@ -841,13 +856,19 @@ export function DiagnosisQuestionnaire({
             type="date"
             value={(ans.q10_date as string) ?? ''}
             onChange={(e) => set('q10_date', e.target.value)}
+            min={((ans.q9 ?? ans.q7_date) as string) || undefined}
             max="2026-08-27"
             className="w-full py-3 px-3.5 border-[0.5px] border-border rounded-[10px] text-[13.5px] text-navy outline-none bg-white box-border focus:border-blue/50 mb-3"
           />
+          {dateOrderError('q10_date') && (
+            <div className="text-[11.5px] text-warm mb-3">
+              {dateOrderError('q10_date')}
+            </div>
+          )}
           <button
             className="btn-primary text-[13px]"
             onClick={() => advance(qNum)}
-            disabled={!ans.q10_date}
+            disabled={!ans.q10_date || !!dateOrderError('q10_date')}
           >
             다음 →
           </button>
@@ -918,9 +939,15 @@ export function DiagnosisQuestionnaire({
               type="date"
               value={(ans[q.id] as string) ?? ''}
               onChange={(e) => set(q.id, e.target.value)}
+              min={q.id === 'q9' ? (ans.q7_date as string) || undefined : undefined}
               max="2026-08-27"
               className="py-3 px-3.5 border-[0.5px] border-border rounded-[10px] text-sm text-navy outline-none bg-white w-full box-border focus:border-blue/50"
             />
+            {q.id === 'q9' && dateOrderError('q9') && (
+              <div className="text-[11.5px] text-warm mt-2">
+                {dateOrderError('q9')}
+              </div>
+            )}
           </div>
           <div className="flex gap-2.5">
             {qNum > 0 && (
