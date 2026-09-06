@@ -27,6 +27,7 @@ export function DocumentEditor({
   analysis,
   checkedEvidence,
   memo,
+  onDocsChange,
   onBack,
   onNext,
 }: {
@@ -34,6 +35,7 @@ export function DocumentEditor({
   analysis: AnalysisResponse | null
   checkedEvidence: string[]
   memo: string
+  onDocsChange: (docs: Record<DocKey, string>) => void
   onBack: () => void
   onNext: () => void
 }) {
@@ -52,7 +54,11 @@ export function DocumentEditor({
   const [exportError, setExportError] = useState<string | null>(null)
 
   const checklist = getEvidenceChecklist(answers)
-  const applicantName = answers.applicant_name as string ?? ""
+  const applicantName = (answers.applicant_name as string) ?? ""
+
+  useEffect(() => {
+    onDocsChange(docs)
+  }, [docs, onDocsChange])
 
   useEffect(() => {
     let alive = true

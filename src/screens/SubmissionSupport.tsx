@@ -2,6 +2,8 @@ import { useState } from "react"
 import { Check } from "lucide-react"
 import { BANKS } from "@/data/bankRequirements"
 import { api, useAsync } from "@/api"
+import type { DocKey } from "@/api"
+import { pdfFileName, saveBlob } from "@/lib/pdf"
 
 const CHECKLIST = [
   { id: "doc", label: "소명서 (풀림 AI 작성본)" },
@@ -30,9 +32,41 @@ const STATUS_STAGES = [
   },
 ]
 
-export function SubmissionSupport({ onBack }: { onBack: () => void }) {
+export function SubmissionSupport({
+  docs,
+  applicantName,
+  onBack,
+}: {
+  docs: Record<DocKey, string> | null
+  applicantName: string
+  onBack: () => void
+}) {
   const [checked, setChecked] = useState<Record<string, boolean>>({})
   const [agreed, setAgreed] = useState(false)
+  const [exporting, setExporting] = useState(false)
+  const [exportError, setExportError] = useState<string | null>(null)
+  const fileName = pdfFileName(applicantName)
+
+  const downloadPdf = async () => {
+    if (!docs) return
+    setExporting(true)
+    setExportError(null)
+    try {
+      const blob = await api.exportPdf({
+        application: docs.application,
+        incident: docs.incident,
+        evidence_index: docs.evidence,
+        applicant_name: applicantName,
+      })
+      saveBlob(blob, fileName)
+    } catch (err) {
+      setExportError(
+        err instanceof Error ? err.message : "PDF 생성에 실패했습니다.",
+      )
+    } finally {
+      setExporting(false)
+    }
+  }
   const doneCount = Object.values(checked).filter(Boolean).length
 
   const guide = useAsync(() => api.submission(), [])
@@ -78,17 +112,23 @@ export function SubmissionSupport({ onBack }: { onBack: () => void }) {
       <div className="bg-blue/7 border-[0.5px] border-blue/30 rounded-[10px] py-4 px-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between mb-7">
         <div>
           <div className="text-[13.5px] font-semibold text-navy mb-0.5">
-            소명서 — 홍길동_20260824.pdf
+            소명서 — {fileName}
           </div>
           <div className="text-[11.5px] text-blue">
-            AI 분석 근거 포함 · A4 3쪽 분량
+            {docs
+              ? "신청서 사유란 · 경위서 · 증거 인덱스 3종 포함"
+              : "STEP 4에서 소명서 초안을 먼저 작성해 주세요"}
           </div>
+          {exportError && (
+            <div className="text-[11.5px] text-warm mt-1">{exportError}</div>
+          )}
         </div>
         <button
           className="btn-primary text-[13px] disabled:opacity-35 self-start sm:self-auto"
-          disabled={!agreed}
+          disabled={!agreed || !docs || exporting}
+          onClick={() => void downloadPdf()}
         >
-          PDF 다운로드
+          {exporting ? "PDF 생성 중…" : "PDF 다운로드"}
         </button>
       </div>
 
