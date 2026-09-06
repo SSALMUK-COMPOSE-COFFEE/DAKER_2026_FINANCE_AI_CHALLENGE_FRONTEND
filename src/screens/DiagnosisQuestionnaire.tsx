@@ -32,7 +32,13 @@ const PAUSE_VALUES: Record<string, string[]> = {
 
 const SELF_INCRIMINATION_VALUES = ['도박환전', '환치기', '대리인출송금'];
 
-const REFERENCE_TODAY = new Date('2026-08-27');
+const REFERENCE_TODAY = new Date();
+REFERENCE_TODAY.setHours(0, 0, 0, 0);
+const TODAY_ISO = [
+  REFERENCE_TODAY.getFullYear(),
+  String(REFERENCE_TODAY.getMonth() + 1).padStart(2, '0'),
+  String(REFERENCE_TODAY.getDate()).padStart(2, '0'),
+].join('-');
 
 export function DiagnosisQuestionnaire({
   onBack,
@@ -857,7 +863,7 @@ export function DiagnosisQuestionnaire({
             value={(ans.q10_date as string) ?? ''}
             onChange={(e) => set('q10_date', e.target.value)}
             min={((ans.q9 ?? ans.q7_date) as string) || undefined}
-            max="2026-08-27"
+            max={TODAY_ISO}
             className="w-full py-3 px-3.5 border-[0.5px] border-border rounded-[10px] text-[13.5px] text-navy outline-none bg-white box-border focus:border-blue/50 mb-3"
           />
           {dateOrderError('q10_date') && (
@@ -940,7 +946,7 @@ export function DiagnosisQuestionnaire({
               value={(ans[q.id] as string) ?? ''}
               onChange={(e) => set(q.id, e.target.value)}
               min={q.id === 'q9' ? (ans.q7_date as string) || undefined : undefined}
-              max="2026-08-27"
+              max={TODAY_ISO}
               className="py-3 px-3.5 border-[0.5px] border-border rounded-[10px] text-sm text-navy outline-none bg-white w-full box-border focus:border-blue/50"
             />
             {q.id === 'q9' && dateOrderError('q9') && (
@@ -981,7 +987,7 @@ export function DiagnosisQuestionnaire({
                 type="date"
                 value={(ans.q7_date as string) ?? ''}
                 onChange={(e) => set('q7_date', e.target.value)}
-                max="2026-08-27"
+                max={TODAY_ISO}
                 className="w-full py-3 px-3.5 border-[0.5px] border-border rounded-[10px] text-[13.5px] text-navy outline-none bg-white box-border focus:border-blue/50"
               />
             </div>
