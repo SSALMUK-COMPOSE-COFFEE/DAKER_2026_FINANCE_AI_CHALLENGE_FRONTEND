@@ -5,6 +5,8 @@ export interface UploadedFile {
   kind?: "transactions" | "image" | "document" | "unknown"
   transactionCount?: number
   error?: string
+  extracted?: string
+  previewUrl?: string
 }
 
 export interface QOption {

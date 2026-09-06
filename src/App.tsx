@@ -10,7 +10,7 @@ import { AnalysisResult } from '@/screens/AnalysisResult';
 import { DocumentEditor } from '@/screens/DocumentEditor';
 import { SubmissionSupport } from '@/screens/SubmissionSupport';
 import type { Answers } from '@/types';
-import type { AnalysisResponse, Applicant, DocKey, Transaction } from '@/api';
+import type { AnalysisResponse, Applicant, DocKey, ImageExtract, Transaction } from '@/api';
 import { EMPTY_APPLICANT } from '@/api';
 
 export default function App() {
@@ -19,6 +19,7 @@ export default function App() {
   const [answers, setAnswers] = useState<Answers>({});
   const [dday, setDday] = useState<number | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [imageNotes, setImageNotes] = useState<ImageExtract[]>([]);
   const [checkedEvidence, setCheckedEvidence] = useState<string[]>([]);
   const [memo, setMemo] = useState('');
   const [analysis, setAnalysis] = useState<AnalysisResponse | null>(null);
@@ -73,7 +74,9 @@ export default function App() {
             answers={answers}
             onBack={() => setStep(1)}
             onNext={() => setStep(3)}
+            onAnswersChange={setAnswers}
             onTransactionsChange={setTransactions}
+            onImageNotesChange={setImageNotes}
             onCheckedEvidenceChange={setCheckedEvidence}
             onMemoChange={setMemo}
             onAnalysisReady={setAnalysis}
@@ -95,6 +98,7 @@ export default function App() {
             analysis={analysis}
             checkedEvidence={checkedEvidence}
             memo={memo}
+            imageNotes={imageNotes}
             applicant={applicant}
             onApplicantChange={setApplicant}
             onDocsChange={setDocs}

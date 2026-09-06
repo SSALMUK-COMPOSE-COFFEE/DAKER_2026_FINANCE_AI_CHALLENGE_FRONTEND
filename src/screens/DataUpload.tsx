@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
-import { Check, CircleAlert, CircleCheck } from 'lucide-react';
+import { Check, CircleAlert, CircleCheck, FileText, FlaskConical } from 'lucide-react';
+import { ImageViewer } from '@/components/ImageViewer';
 import { getEvidenceChecklist, CAT_LABELS } from '@/data/evidence';
 import { BANKS, BANK_DISCLOSURE_NOTE } from '@/data/bankRequirements';
 import { getLetterTemplate } from '@/data/letterTemplates';
 import { api, useAsync } from '@/api';
-import type { AnalysisResponse, Transaction } from '@/api';
+import type { AnalysisResponse, ImageExtract, Transaction } from '@/api';
 import type { Answers, EvidenceCategory, Purpose, UploadedFile } from '@/types';
 
 const CAT_ORDER: EvidenceCategory[] = ['D', 'A', 'B', 'C'];
+const SAMPLE_PERSONA = 'secondhand';
 
 function formatSize(bytes: number) {
   if (bytes >= 1024 * 1024) return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
@@ -25,7 +27,9 @@ export function DataUpload({
   answers,
   onBack,
   onNext,
+  onAnswersChange,
   onTransactionsChange,
+  onImageNotesChange,
   onCheckedEvidenceChange,
   onMemoChange,
   onAnalysisReady,
@@ -33,7 +37,9 @@ export function DataUpload({
   answers: Answers;
   onBack: () => void;
   onNext: () => void;
+  onAnswersChange: (a: Answers) => void;
   onTransactionsChange: (t: Transaction[]) => void;
+  onImageNotesChange: (notes: ImageExtract[]) => void;
   onCheckedEvidenceChange: (ids: string[]) => void;
   onMemoChange: (memo: string) => void;
   onAnalysisReady: (a: AnalysisResponse) => void;
@@ -44,9 +50,12 @@ export function DataUpload({
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
   const [selectedBank, setSelectedBank] = useState('');
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [imageNotes, setImageNotes] = useState<ImageExtract[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [loadingSample, setLoadingSample] = useState(false);
+  const [viewer, setViewer] = useState<UploadedFile | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -100,6 +109,9 @@ export function DataUpload({
         name: f.name,
         size: formatSize(f.size),
         status: 'loading' as const,
+        previewUrl: f.type.startsWith('image/')
+          ? URL.createObjectURL(f)
+          : undefined,
       })),
     ]);
 
@@ -115,6 +127,7 @@ export function DataUpload({
             size: formatSize(parsed.size),
             kind: parsed.kind,
             transactionCount: parsed.transaction_count,
+            extracted: parsed.extracted?.summary,
             error: parsed.error ?? undefined,
             status: parsed.error ? ('error' as const) : ('done' as const),
           };
@@ -125,6 +138,14 @@ export function DataUpload({
         onTransactionsChange(merged);
         return merged;
       });
+      const notes = res.files.flatMap((p) => (p.extracted ? [p.extracted] : []));
+      if (notes.length) {
+        setImageNotes((prev) => {
+          const merged = [...prev, ...notes];
+          onImageNotesChange(merged);
+          return merged;
+        });
+      }
     } catch (err) {
       const message =
         err instanceof Error ? err.message : '업로드에 실패했습니다.';
@@ -136,6 +157,33 @@ export function DataUpload({
             : f,
         ),
       );
+    }
+  };
+
+  const loadSample = async () => {
+    if (loadingSample) return;
+    setLoadingSample(true);
+    setUploadError(null);
+    try {
+      const [persona, samples] = await Promise.all([
+        api.persona(SAMPLE_PERSONA),
+        api.personaSamples(SAMPLE_PERSONA),
+      ]);
+      onAnswersChange({ ...answers, ...persona.answers });
+      setTransactions(persona.transactions);
+      onTransactionsChange(persona.transactions);
+      setCheckedItems((prev) => ({
+        ...prev,
+        ...Object.fromEntries(mustItems.map((m) => [m.id, true])),
+      }));
+      const sampleFiles = await Promise.all(samples.map(api.sampleFile));
+      await addFiles(sampleFiles);
+    } catch (err) {
+      setUploadError(
+        err instanceof Error ? err.message : '샘플 데이터를 불러오지 못했습니다.',
+      );
+    } finally {
+      setLoadingSample(false);
     }
   };
 
@@ -159,6 +207,14 @@ export function DataUpload({
 
   return (
     <div className="step-section max-w-175 mx-auto pt-8 px-5 pb-14 md:pt-14 md:px-12 md:pb-20">
+      {viewer?.previewUrl && (
+        <ImageViewer
+          src={viewer.previewUrl}
+          name={viewer.name}
+          caption={viewer.extracted}
+          onClose={() => setViewer(null)}
+        />
+      )}
       <div className="text-[11px] text-blue font-semibold tracking-widest mb-2">
         STEP 2
       </div>
@@ -392,6 +448,21 @@ export function DataUpload({
             CSV, XLSX, PDF, JPG, PNG — 파일당 최대 20MB
           </div>
         </div>
+        <div className="flex items-center justify-between gap-3 mb-3.5 -mt-1">
+          <span className="text-[11px] text-navy/40">
+            데모용 · 중고 노트북 판매 사례(홍길동·카카오뱅크)의 거래내역과 대화
+            캡처를 넣습니다
+          </span>
+          <button
+            type="button"
+            onClick={() => void loadSample()}
+            disabled={loadingSample}
+            className="btn-secondary text-[12px] shrink-0 inline-flex items-center gap-1.5"
+          >
+            <FlaskConical size={13} />
+            {loadingSample ? '불러오는 중…' : '샘플 데이터로 채우기'}
+          </button>
+        </div>
 
         {uploadError && (
           <div className="bg-warm/6 border-[0.5px] border-warm/25 rounded-lg py-2.5 px-3.5 mb-3 text-[11.5px] text-navy/65 leading-[1.6]">
@@ -408,6 +479,24 @@ export function DataUpload({
                   i < files.length - 1 ? 'border-b-[0.5px] border-navy/7' : ''
                 }`}
               >
+                {f.previewUrl ? (
+                  <button
+                    type="button"
+                    onClick={() => setViewer(f)}
+                    aria-label={`${f.name} 크게 보기`}
+                    className="w-11 h-11 shrink-0 rounded-md overflow-hidden border-[0.5px] border-navy/10 bg-navy/3 p-0 cursor-pointer"
+                  >
+                    <img
+                      src={f.previewUrl}
+                      alt=""
+                      className="w-full h-full object-cover object-top"
+                    />
+                  </button>
+                ) : (
+                  <div className="w-11 h-11 shrink-0 rounded-md border-[0.5px] border-navy/10 bg-navy/3 flex items-center justify-center text-navy/35">
+                    <FileText size={18} />
+                  </div>
+                )}
                 <div className="flex-1 min-w-0">
                   <div className="text-[12.5px] font-medium text-navy truncate">
                     {f.name}
@@ -418,6 +507,11 @@ export function DataUpload({
                       ? ` · 거래 ${f.transactionCount.toLocaleString()}건 인식`
                       : ''}
                   </div>
+                  {f.extracted && (
+                    <div className="text-[10.5px] text-navy/55 leading-[1.5] mt-0.5">
+                      {f.extracted}
+                    </div>
+                  )}
                   {f.error && (
                     <div className="text-[10.5px] text-warm leading-[1.5] mt-0.5">
                       {f.error}
@@ -439,9 +533,10 @@ export function DataUpload({
                   />
                 )}
                 <button
-                  onClick={() =>
-                    setFiles((prev) => prev.filter((_, j) => j !== i))
-                  }
+                  onClick={() => {
+                    if (f.previewUrl) URL.revokeObjectURL(f.previewUrl);
+                    setFiles((prev) => prev.filter((_, j) => j !== i));
+                  }}
                   aria-label={`${f.name} 삭제`}
                   className="bg-transparent border-none cursor-pointer text-navy/30 text-base leading-none"
                 >

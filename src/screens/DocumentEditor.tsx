@@ -7,7 +7,7 @@ import {
 } from "@/data/document"
 import { getEvidenceChecklist } from "@/data/evidence"
 import { ApiError, api, applicantFromAnswers } from "@/api"
-import type { AnalysisResponse, Applicant, Citation, DocKey } from "@/api"
+import type { AnalysisResponse, Applicant, Citation, DocKey, ImageExtract } from "@/api"
 import { ApplicantForm } from "@/components/ApplicantForm"
 import type { Answers } from "@/types"
 
@@ -28,6 +28,7 @@ export function DocumentEditor({
   analysis,
   checkedEvidence,
   memo,
+  imageNotes,
   applicant,
   onApplicantChange,
   onDocsChange,
@@ -38,6 +39,7 @@ export function DocumentEditor({
   analysis: AnalysisResponse | null
   checkedEvidence: string[]
   memo: string
+  imageNotes: ImageExtract[]
   applicant: Applicant
   onApplicantChange: (next: Applicant) => void
   onDocsChange: (docs: Record<DocKey, string>) => void
@@ -73,6 +75,7 @@ export function DocumentEditor({
         checked_evidence: checkedEvidence,
         memo,
         applicant: ap,
+        image_notes: imageNotes,
       })
       setDocs({
         application: res.application,

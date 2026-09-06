@@ -13,12 +13,33 @@ export interface Transaction {
   kind: TxKind
 }
 
+export type ImageCategory =
+  | "chat"
+  | "notification"
+  | "txhistory"
+  | "receipt"
+  | "tracking"
+  | "police"
+  | "other"
+
+export interface ImageExtract {
+  file: string
+  category: ImageCategory
+  summary: string
+  depositor: string
+  amount: string
+  occurred_at: string
+  counterparty: string
+  quotes: string[]
+}
+
 export interface ParsedFile {
   name: string
   size: number
   kind: ParsedFileKind
   transaction_count: number
   error: string | null
+  extracted: ImageExtract | null
 }
 
 export interface UploadParseResponse {
@@ -167,10 +188,16 @@ export interface DocumentRewriteResponse {
   generated_by: "llm"
 }
 
+export interface SampleFile {
+  name: string
+  url: string
+}
+
 export interface Persona {
   id: string
   title: string
   summary: string
+  story: string
   expected_basis: Fact[]
   answers: Answers
   transactions: Transaction[]

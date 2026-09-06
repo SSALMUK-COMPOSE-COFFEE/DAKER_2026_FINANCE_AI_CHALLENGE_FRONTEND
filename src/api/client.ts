@@ -2,6 +2,7 @@ import type { Answers } from "@/types"
 import type {
   AnalysisResponse,
   Applicant,
+  ImageExtract,
   BanksResponse,
   Citation,
   DocKey,
@@ -11,6 +12,7 @@ import type {
   IntakeResponse,
   LetterTemplate,
   Persona,
+  SampleFile,
   SubmissionGuide,
   Transaction,
   UploadParseResponse,
@@ -81,6 +83,7 @@ export const api = {
     checked_evidence: string[]
     memo: string
     applicant: Partial<Applicant>
+    image_notes: ImageExtract[]
   }) => post<DocumentDraftResponse>("/documents/draft", payload),
 
   rewriteDocument: (payload: {
@@ -115,6 +118,16 @@ export const api = {
   submission: () => request<SubmissionGuide>("/reference/submission"),
 
   personas: () => request<Persona[]>("/personas"),
+  persona: (id: string) => request<Persona>(`/personas/${encodeURIComponent(id)}`),
+  personaSamples: (id: string) =>
+    request<SampleFile[]>(`/personas/${encodeURIComponent(id)}/samples`),
+  sampleFile: async (sample: SampleFile): Promise<File> => {
+    const res = await fetch(`${API_BASE}${sample.url}`)
+    if (!res.ok) throw await toError(res)
+    return new File([await res.blob()], sample.name, {
+      type: res.headers.get("content-type") ?? "application/octet-stream",
+    })
+  },
   personaAnalysis: (id: string) =>
     request<AnalysisResponse>(`/personas/${encodeURIComponent(id)}/analysis`),
 }
