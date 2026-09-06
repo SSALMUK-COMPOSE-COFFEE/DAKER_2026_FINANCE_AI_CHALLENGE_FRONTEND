@@ -10,7 +10,8 @@ import { AnalysisResult } from '@/screens/AnalysisResult';
 import { DocumentEditor } from '@/screens/DocumentEditor';
 import { SubmissionSupport } from '@/screens/SubmissionSupport';
 import type { Answers } from '@/types';
-import type { AnalysisResponse, DocKey, Transaction } from '@/api';
+import type { AnalysisResponse, Applicant, DocKey, Transaction } from '@/api';
+import { EMPTY_APPLICANT } from '@/api';
 
 export default function App() {
   const [step, setStep] = useState(0);
@@ -22,6 +23,7 @@ export default function App() {
   const [memo, setMemo] = useState('');
   const [analysis, setAnalysis] = useState<AnalysisResponse | null>(null);
   const [docs, setDocs] = useState<Record<DocKey, string> | null>(null);
+  const [applicant, setApplicant] = useState<Applicant>(EMPTY_APPLICANT);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const mainRef = useRef<HTMLElement>(null);
 
@@ -93,6 +95,8 @@ export default function App() {
             analysis={analysis}
             checkedEvidence={checkedEvidence}
             memo={memo}
+            applicant={applicant}
+            onApplicantChange={setApplicant}
             onDocsChange={setDocs}
             onBack={() => setStep(3)}
             onNext={() => setStep(5)}
@@ -101,7 +105,7 @@ export default function App() {
         {step === 5 && (
           <SubmissionSupport
             docs={docs}
-            applicantName={(answers.applicant_name as string) ?? ''}
+            applicant={applicant}
             onBack={() => setStep(4)}
           />
         )}

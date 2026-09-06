@@ -6,8 +6,9 @@ import {
   EVIDENCE_INDEX_DOC,
 } from "@/data/document"
 import { getEvidenceChecklist } from "@/data/evidence"
-import { ApiError, api } from "@/api"
-import type { AnalysisResponse, Citation, DocKey } from "@/api"
+import { ApiError, api, applicantFromAnswers } from "@/api"
+import type { AnalysisResponse, Applicant, Citation, DocKey } from "@/api"
+import { ApplicantForm } from "@/components/ApplicantForm"
 import type { Answers } from "@/types"
 
 const TABS: { key: DocKey; label: string; sub: string }[] = [
@@ -27,6 +28,8 @@ export function DocumentEditor({
   analysis,
   checkedEvidence,
   memo,
+  applicant,
+  onApplicantChange,
   onDocsChange,
   onBack,
   onNext,
@@ -35,6 +38,8 @@ export function DocumentEditor({
   analysis: AnalysisResponse | null
   checkedEvidence: string[]
   memo: string
+  applicant: Applicant
+  onApplicantChange: (next: Applicant) => void
   onDocsChange: (docs: Record<DocKey, string>) => void
   onBack: () => void
   onNext: () => void
@@ -54,46 +59,45 @@ export function DocumentEditor({
   const [exportError, setExportError] = useState<string | null>(null)
 
   const checklist = getEvidenceChecklist(answers)
-  const applicantName = (answers.applicant_name as string) ?? ""
-
   useEffect(() => {
     onDocsChange(docs)
   }, [docs, onDocsChange])
 
-  useEffect(() => {
-    let alive = true
+  const runDraft = async (ap: Applicant) => {
     setDrafting(true)
     setDraftError(null)
-    api
-      .draftDocuments({
+    try {
+      const res = await api.draftDocuments({
         answers,
         analysis,
         checked_evidence: checkedEvidence,
         memo,
-        applicant: { name: applicantName },
+        applicant: ap,
       })
-      .then((res) => {
-        if (!alive) return
-        setDocs({
-          application: res.application,
-          incident: res.incident,
-          evidence: res.evidence_index,
-        })
-        setCitations(res.citations)
-        setSource(res.generated_by)
-        setDrafting(false)
+      setDocs({
+        application: res.application,
+        incident: res.incident,
+        evidence: res.evidence_index,
       })
-      .catch((err: unknown) => {
-        if (!alive) return
-        setDraftError(
-          err instanceof Error ? err.message : "초안 생성에 실패했습니다.",
-        )
-        setSource("local")
-        setDrafting(false)
-      })
-    return () => {
-      alive = false
+      setCitations(res.citations)
+      setSource(res.generated_by)
+    } catch (err) {
+      setDraftError(
+        err instanceof Error ? err.message : "초안 생성에 실패했습니다.",
+      )
+      setSource("local")
+    } finally {
+      setDrafting(false)
     }
+  }
+
+  useEffect(() => {
+    const seeded = {
+      ...applicant,
+      bank: applicant.bank || applicantFromAnswers(answers).bank,
+    }
+    if (seeded.bank !== applicant.bank) onApplicantChange(seeded)
+    void runDraft(seeded)
   }, [])
 
   const runRewrite = async () => {
@@ -131,7 +135,7 @@ export function DocumentEditor({
         application: docs.application,
         incident: docs.incident,
         evidence_index: docs.evidence,
-        applicant_name: applicantName,
+        applicant,
       })
       const url = URL.createObjectURL(blob)
       window.open(url, "_blank", "noopener")
@@ -189,6 +193,15 @@ export function DocumentEditor({
           이의제기신청서 사유란·경위서·증거 인덱스 3종이 함께 준비됩니다. 문서를
           직접 검토하고 필요한 부분을 고쳐 쓰세요.
         </p>
+
+        <div className="mt-3">
+          <ApplicantForm
+            value={applicant}
+            onChange={onApplicantChange}
+            onRedraft={() => void runDraft(applicant)}
+            redrafting={drafting}
+          />
+        </div>
 
         {draftError && (
           <div className="mt-3 bg-warm/6 border-[0.5px] border-warm/25 rounded-lg py-2.5 px-3.5 text-[11.5px] text-navy/65 leading-[1.6]">

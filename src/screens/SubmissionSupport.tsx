@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Check } from "lucide-react"
 import { BANKS } from "@/data/bankRequirements"
 import { api, useAsync } from "@/api"
-import type { DocKey } from "@/api"
+import type { Applicant, DocKey } from "@/api"
 import { pdfFileName, saveBlob } from "@/lib/pdf"
 
 const CHECKLIST = [
@@ -34,13 +34,14 @@ const STATUS_STAGES = [
 
 export function SubmissionSupport({
   docs,
-  applicantName,
+  applicant,
   onBack,
 }: {
   docs: Record<DocKey, string> | null
-  applicantName: string
+  applicant: Applicant
   onBack: () => void
 }) {
+  const applicantName = applicant.name
   const [checked, setChecked] = useState<Record<string, boolean>>({})
   const [agreed, setAgreed] = useState(false)
   const [exporting, setExporting] = useState(false)
@@ -56,7 +57,7 @@ export function SubmissionSupport({
         application: docs.application,
         incident: docs.incident,
         evidence_index: docs.evidence,
-        applicant_name: applicantName,
+        applicant,
       })
       saveBlob(blob, fileName)
     } catch (err) {
