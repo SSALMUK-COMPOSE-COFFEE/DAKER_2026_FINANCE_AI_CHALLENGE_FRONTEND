@@ -54,6 +54,7 @@ export function DiagnosisQuestionnaire({
   const [screen, setScreen] = useState<Screen>('intro');
   const [returnTo, setReturnTo] = useState<Screen>('intro');
   const [freeText, setFreeText] = useState('');
+  const [loadingSample, setLoadingSample] = useState(false);
   const [parsing, setParsing] = useState(false);
   const [intakeSummary, setIntakeSummary] = useState<string | null>(null);
   const [intakeError, setIntakeError] = useState<string | null>(null);
@@ -65,6 +66,21 @@ export function DiagnosisQuestionnaire({
 
   const set = (key: string, val: string | string[]) =>
     setAns((prev) => ({ ...prev, [key]: val }));
+
+  const loadSampleStory = async () => {
+    setLoadingSample(true);
+    setIntakeError(null);
+    try {
+      const persona = await api.persona('secondhand');
+      setFreeText(persona.story);
+    } catch (err) {
+      setIntakeError(
+        err instanceof Error ? err.message : '샘플 글을 불러오지 못했습니다.',
+      );
+    } finally {
+      setLoadingSample(false);
+    }
+  };
 
   const submitIntake = async () => {
     const text = freeText.trim();
@@ -209,8 +225,18 @@ export function DiagnosisQuestionnaire({
           value={freeText}
           onChange={(e) => setFreeText(e.target.value)}
           placeholder="예: 당근에서 아이폰 팔았는데 어제 은행에서 계좌 정지됐다고 문자가 왔어요..."
-          className="w-full h-40 py-3.5 px-4 border-[0.5px] border-border rounded-[10px] text-[13.5px] text-navy bg-white outline-none resize-none leading-[1.7] box-border focus:border-blue/50 mb-6"
+          className="w-full h-40 py-3.5 px-4 border-[0.5px] border-border rounded-[10px] text-[13.5px] text-navy bg-white outline-none resize-none leading-[1.7] box-border focus:border-blue/50 mb-2"
         />
+        <div className="flex justify-end mb-6">
+          <button
+            type="button"
+            className="text-[11.5px] text-navy/45 bg-transparent border-none cursor-pointer hover:text-blue"
+            onClick={() => void loadSampleStory()}
+            disabled={parsing || loadingSample}
+          >
+            {loadingSample ? '불러오는 중…' : '데모용 · 샘플 글 넣기 (중고 노트북 판매 사례)'}
+          </button>
+        </div>
         <div className="flex flex-wrap items-center gap-3">
           <button className="btn-secondary" onClick={onBack} disabled={parsing}>
             ← 이전
