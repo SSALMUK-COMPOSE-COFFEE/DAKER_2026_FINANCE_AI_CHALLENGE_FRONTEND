@@ -1,15 +1,5 @@
-import { useState } from "react"
-import { TransactionGraph } from "@/components/TransactionGraph"
-import { CAT_LABELS } from "@/data/evidence"
-import { api } from "@/api"
-import type { AnalysisResponse, Fact, Transaction } from "@/api"
+import type { Fact } from "@/api"
 import type { Answers } from "@/types"
-
-const LEGEND = [
-  { dotClass: "bg-blue", label: "내 계좌 (분석 대상)" },
-  { dotClass: "bg-warm/50", label: "의심 경유 계좌" },
-  { dotClass: "bg-navy/25", label: "정상 수신 계좌" },
-]
 
 function FactRows({ rows }: { rows: Fact[] }) {
   return (
@@ -31,17 +21,6 @@ function FactRows({ rows }: { rows: Fact[] }) {
   )
 }
 
-function EmptyHint({ title, body }: { title: string; body: string }) {
-  return (
-    <div className="bg-navy/3 border-[0.5px] border-dashed border-navy/15 rounded-xl py-5 px-5">
-      <div className="text-[12px] font-semibold text-navy/70 mb-1.5">
-        {title}
-      </div>
-      <div className="text-[11.5px] text-navy/50 leading-[1.7]">{body}</div>
-    </div>
-  )
-}
-
 function localFacts(answers: Answers): Fact[] {
   return [
     {
@@ -56,7 +35,7 @@ function localFacts(answers: Answers): Fact[] {
         ? `${Number(answers.q7_amount).toLocaleString()}원`
         : "미입력",
     },
-    { label: "입금자명", value: answers.q7_depositor as string || "미입력" },
+    { label: "입금자명", value: (answers.q7_depositor as string) || "미입력" },
     {
       label: "입금자명 일치 여부",
       value:
@@ -71,37 +50,13 @@ function localFacts(answers: Answers): Fact[] {
 
 export function AnalysisResult({
   answers,
-  transactions,
-  analysis,
-  onAnalysis,
   onBack,
   onNext,
 }: {
   answers: Answers
-  transactions: Transaction[]
-  analysis: AnalysisResponse | null
-  onAnalysis: (a: AnalysisResponse | null) => void
   onBack: () => void
   onNext: () => void
 }) {
-  const [retrying, setRetrying] = useState(false)
-  const [retryError, setRetryError] = useState<string | null>(null)
-  const data = analysis
-
-  const reload = async () => {
-    setRetrying(true)
-    setRetryError(null)
-    try {
-      onAnalysis(await api.analyze(answers, transactions))
-    } catch (err) {
-      setRetryError(
-        err instanceof Error ? err.message : "요청에 실패했습니다.",
-      )
-    } finally {
-      setRetrying(false)
-    }
-  }
-
   const nameMismatch = answers.q6 === "다름"
   const dealAmount = Number(answers.q7_dealAmount ?? 0)
   const noticeAmount = Number(answers.q7_noticeAmount ?? 0)
@@ -109,8 +64,7 @@ export function AnalysisResult({
   const amountsMismatch =
     dealAmount > 0 && noticeAmount > 0 && dealAmount !== noticeAmount
 
-  const facts = data?.facts.length ? data.facts : localFacts(answers)
-  const noTransactions = transactions.length === 0
+  const facts = localFacts(answers)
 
   return (
     <div className="step-section max-w-215 mx-auto pt-8 px-5 pb-14 md:pt-14 md:px-12 md:pb-20">
@@ -119,76 +73,30 @@ export function AnalysisResult({
           STEP 3
         </span>
       </div>
-      <div className="flex flex-wrap items-baseline justify-between gap-2 mb-2">
-        <h1 className="font-serif-kr text-[28px] font-bold text-navy tracking-[-0.01em]">
-          AI 분석 결과
-        </h1>
-        {retrying && (
-          <span className="text-[11px] bg-navy/6 text-navy/50 border-[0.5px] border-navy/15 py-0.75 px-2.5 rounded-full font-semibold">
-            분석 중…
-          </span>
-        )}
-      </div>
+      <h1 className="font-serif-kr text-[28px] font-bold text-navy tracking-[-0.01em] mb-2">
+        입력 내용 확인
+      </h1>
       <p className="font-sans-kr text-sm text-navy/55 mb-6 leading-[1.7]">
-        문진 답변과 첨부 자료에서 사실관계를 추출하고, 4개 명제 (A. 거래 실재 ·
-        B. 물품 인도 · C. 계좌 정상성 · D. 절차 메타)로 구조화했습니다.
+        문진에서 답변하신 입금 정보를 정리했습니다. 내용을 확인한 뒤 다음
+        단계로 진행해 주세요.
       </p>
-
-      {retryError && (
-        <div className="bg-warm/6 border-[0.5px] border-warm/25 rounded-xl py-4 px-5 mb-6">
-          <div className="text-[11px] text-warm font-semibold mb-1">
-            분석 서버에 연결하지 못했습니다
-          </div>
-          <div className="text-[11.5px] text-navy/60 leading-[1.6] mb-2.5">
-            {retryError} — 아래 내용은 문진 답변만으로 구성한 임시 결과입니다.
-          </div>
-          <button
-            className="btn-secondary text-[12px]"
-            onClick={() => void reload()}
-          >
-            다시 시도
-          </button>
-        </div>
-      )}
 
       <div className="card py-4.5 px-5 mb-6">
         <div className="text-xs font-semibold text-navy mb-3">
-          추출된 사실관계
+          입력하신 입금 정보
         </div>
         <FactRows rows={facts} />
       </div>
 
-      {(data?.signals ?? []).map((s) => (
-        <div
-          key={s.key}
-          className={`rounded-xl py-4 px-5 mb-6 border-[0.5px] ${
-            s.level === "warn"
-              ? "bg-warm/6 border-warm/25"
-              : "bg-blue/5 border-blue/20"
-          }`}
-        >
-          <div
-            className={`text-[11px] font-semibold mb-1 ${
-              s.level === "warn" ? "text-warm" : "text-blue"
-            }`}
-          >
-            {s.title}
-          </div>
-          <div className="text-[11.5px] text-navy/60 leading-[1.6]">
-            {s.body}
-          </div>
-        </div>
-      ))}
-
-      {!data && nameMismatch && (
+      {nameMismatch && (
         <div className="bg-warm/6 border-[0.5px] border-warm/25 rounded-xl py-4 px-5 mb-6">
           <div className="text-[11px] text-warm font-semibold mb-1">
             입금자명 불일치 신호 감지
           </div>
           <div className="text-[11.5px] text-navy/60 leading-[1.6]">
             입금자 이름이 대화 상대방과 달랐다고 답변하신 내용을 소명서 전면에
-            배치해 선제적으로 해명하도록 반영했습니다. 대화 기록에 입금자 이름이
-            등장하지 않는 것은 오히려 3자사기 구조의 증거입니다.
+            배치해 선제적으로 해명하도록 반영했습니다. 대화 기록에 입금자
+            이름이 등장하지 않는 것은 오히려 3자사기 구조의 증거입니다.
           </div>
         </div>
       )}
@@ -226,117 +134,16 @@ export function AnalysisResult({
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-5 mb-6">
-        <div className="card pt-7 px-5 pb-5 md:px-7">
-          <div className="text-xs text-navy/45 mb-4 tracking-[0.04em]">
-            거래 흐름 시각화
-            {!noTransactions && data && data.graph.nodes.length > 0
-              ? ` · 계좌 ${data.graph.nodes.length}개`
-              : ""}
-          </div>
-          {noTransactions ? (
-            <EmptyHint
-              title="거래내역을 올리면 이 그림이 채워집니다"
-              body="증거 준비 단계에서 거래내역 파일을 올리면, 지목된 입금 건이 어디서 들어와 어디로 나갔는지를 계좌 단위로 그려 드립니다. 지급정지가 어떻게 번졌는지 설명하는 화면이며 정상 여부를 가리는 그림이 아닙니다."
-            />
-          ) : (
-            <>
-              <TransactionGraph
-                width={440}
-                height={220}
-                detailed
-                animated
-                data={data?.graph}
-              />
-              <div className="flex flex-wrap gap-4 mt-4">
-                {LEGEND.map((l, i) => (
-                  <div key={i} className="flex items-center gap-1.25">
-                    <div className={`w-2 h-2 rounded-full ${l.dotClass}`} />
-                    <span className="text-[10.5px] text-navy/50">{l.label}</span>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-
-        <div className="flex flex-col gap-2.5">
-          <div className="card py-4.5 px-5">
-            <div className="text-[11px] text-navy/40 mb-2.5">
-              계좌 정상성 근거
-            </div>
-            {noTransactions ? (
-              <EmptyHint
-                title="거래내역을 올리면 이 지표가 채워집니다"
-                body="계좌 개설 경과 기간, 급여 입금 주기성, 자동이체 반복성, 평소 패턴과의 이탈도를 계산해 드립니다. 통신비·공과금 자동이체처럼 오래 반복된 흐름은 소액 간소화 트랙의 생계 연관성 근거가 됩니다."
-              />
-            ) : (
-              <FactRows rows={data?.account_normality ?? []} />
-            )}
-          </div>
-        </div>
-      </div>
-
-      {data && data.findings.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-9">
-          {data.findings.map((e, i) => (
-            <div key={i} className="card py-4 px-4.5">
-              <div className="flex justify-between items-center gap-2 mb-1.5">
-                <div className="flex items-center gap-2 min-w-0">
-                  <span
-                    className="text-[9.5px] font-bold text-blue bg-blue/10 py-px px-1.75 rounded-[10px] shrink-0"
-                    title={CAT_LABELS[e.category]?.title}
-                  >
-                    {e.category}
-                  </span>
-                  <span className="text-[12.5px] font-semibold text-navy truncate">
-                    {e.label}
-                  </span>
-                </div>
-                <span
-                  className={`text-[10px] font-semibold py-0.5 px-1.75 rounded-[10px] shrink-0 ${
-                    e.verdict === "정상"
-                      ? "text-blue bg-blue/10"
-                      : "text-warm bg-warm/10"
-                  }`}
-                >
-                  {e.verdict}
-                </span>
-              </div>
-              <div className="text-[11.5px] text-navy/50 leading-normal">
-                {e.detail}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {data && data.notes.length > 0 && (
-        <div className="card py-4 px-5 mb-6">
-          <div className="text-[11px] text-navy/40 mb-2">분석 메모</div>
-          <ul className="flex flex-col gap-1.5 m-0 pl-4">
-            {data.notes.map((n, i) => (
-              <li key={i} className="text-[11.5px] text-navy/55 leading-[1.6]">
-                {n}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
       <div className="bg-navy/4 rounded-lg py-3 px-4 mb-6 text-[11px] text-navy/55 leading-[1.7]">
-        분석 과정에서 등장한 제3자(거래 상대방 등)의 개인정보는 마스킹
-        처리되었으며, 업로드하신 원본 자료는 본 분석이 완료된 직후 삭제됩니다.
-        계좌 정상성은 단일 점수가 아니라 근거를 나열하는 방식으로 제시합니다 —
-        은행 심사자가 읽어야 하는 것은 점수가 아니라 근거이기 때문입니다.
+        업로드한 자료는 소명서 작성에만 사용되며 작성 완료 후 삭제됩니다.
       </div>
 
       <div className="flex gap-2.5">
         <button className="btn-secondary" onClick={onBack}>
           ← 이전
         </button>
-        <button className="btn-primary" onClick={onNext} disabled={retrying}>
-          이 결과로 소명서 초안 생성
+        <button className="btn-primary" onClick={onNext}>
+          이 내용으로 소명서 초안 생성
         </button>
       </div>
     </div>

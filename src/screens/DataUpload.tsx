@@ -594,7 +594,7 @@ export function DataUpload({
             '전송 중…'
           ) : (
             <>
-              AI 분석 시작
+              입력 내용 확인하기
               {transactions.length > 0
                 ? ` (거래 ${transactions.length.toLocaleString()}건)`
                 : ''}{' '}

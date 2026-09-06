@@ -85,9 +85,6 @@ export default function App() {
         {step === 3 && (
           <AnalysisResult
             answers={answers}
-            transactions={transactions}
-            analysis={analysis}
-            onAnalysis={setAnalysis}
             onBack={() => setStep(2)}
             onNext={() => setStep(4)}
           />
