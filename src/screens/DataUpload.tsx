@@ -25,6 +25,7 @@ function priorityClasses(p: string) {
 
 export function DataUpload({
   answers,
+  autoSample,
   onBack,
   onNext,
   onAnswersChange,
@@ -35,6 +36,7 @@ export function DataUpload({
   onAnalysisReady,
 }: {
   answers: Answers;
+  autoSample: boolean;
   onBack: () => void;
   onNext: () => void;
   onAnswersChange: (a: Answers) => void;
@@ -186,6 +188,12 @@ export function DataUpload({
       setLoadingSample(false);
     }
   };
+
+  useEffect(() => {
+    if (autoSample && files.length === 0 && transactions.length === 0) {
+      void loadSample();
+    }
+  }, []);
 
   const startAnalysis = async () => {
     setSubmitError(null);

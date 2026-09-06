@@ -17,6 +17,7 @@ export default function App() {
   const [step, setStep] = useState(0);
   const [showModal, setShowModal] = useState(true);
   const [answers, setAnswers] = useState<Answers>({});
+  const [sampleMode, setSampleMode] = useState(false);
   const [dday, setDday] = useState<number | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [imageNotes, setImageNotes] = useState<ImageExtract[]>([]);
@@ -67,6 +68,7 @@ export default function App() {
             onNext={() => setStep(2)}
             onDdayChange={setDday}
             onAnswersChange={setAnswers}
+            onSampleMode={setSampleMode}
           />
         )}
         {step === 2 && (
@@ -74,6 +76,7 @@ export default function App() {
             answers={answers}
             onBack={() => setStep(1)}
             onNext={() => setStep(3)}
+            autoSample={sampleMode}
             onAnswersChange={setAnswers}
             onTransactionsChange={setTransactions}
             onImageNotesChange={setImageNotes}

@@ -9,6 +9,7 @@ import {
 import { QUESTIONS } from '@/data/questions';
 import { getEvidenceChecklist, CAT_LABELS } from '@/data/evidence';
 import { api } from '@/api';
+import type { Persona } from '@/api';
 import type { Answers } from '@/types';
 
 type Screen =
@@ -45,16 +46,19 @@ export function DiagnosisQuestionnaire({
   onNext,
   onDdayChange,
   onAnswersChange,
+  onSampleMode,
 }: {
   onBack: () => void;
   onNext: () => void;
   onDdayChange: (d: number | null) => void;
   onAnswersChange: (a: Answers) => void;
+  onSampleMode: (on: boolean) => void;
 }) {
   const [screen, setScreen] = useState<Screen>('intro');
   const [returnTo, setReturnTo] = useState<Screen>('intro');
   const [freeText, setFreeText] = useState('');
   const [loadingSample, setLoadingSample] = useState(false);
+  const [samplePersona, setSamplePersona] = useState<Persona | null>(null);
   const [parsing, setParsing] = useState(false);
   const [intakeSummary, setIntakeSummary] = useState<string | null>(null);
   const [intakeError, setIntakeError] = useState<string | null>(null);
@@ -72,6 +76,7 @@ export function DiagnosisQuestionnaire({
     setIntakeError(null);
     try {
       const persona = await api.persona('secondhand');
+      setSamplePersona(persona);
       setFreeText(persona.story);
     } catch (err) {
       setIntakeError(
@@ -88,6 +93,14 @@ export function DiagnosisQuestionnaire({
       setScreen(0);
       return;
     }
+    if (samplePersona && text === samplePersona.story.trim()) {
+      setAns(samplePersona.answers);
+      setIntakeSummary(samplePersona.summary);
+      onSampleMode(true);
+      finishWith(samplePersona.answers);
+      return;
+    }
+    onSampleMode(false);
     setParsing(true);
     setIntakeError(null);
     try {
@@ -136,9 +149,13 @@ export function DiagnosisQuestionnaire({
     setScreen(qIdx + 1);
   };
 
-  const finish = () => {
+  const finish = () => finishWith(ans);
+
+  const finishWith = (answers: Answers) => {
     const noticeDate =
-      ans.q10 === '받음' ? (ans.q10_date as string | undefined) : undefined;
+      answers.q10 === '받음'
+        ? (answers.q10_date as string | undefined)
+        : undefined;
     if (noticeDate) {
       const deadline = new Date(noticeDate);
       deadline.setMonth(deadline.getMonth() + 2);
@@ -148,7 +165,7 @@ export function DiagnosisQuestionnaire({
     } else {
       onDdayChange(null); // 공고 전(또는 날짜 미상) — 마감일 미확정
     }
-    onAnswersChange(ans);
+    onAnswersChange(answers);
     setScreen('result');
   };
 
