@@ -94,7 +94,7 @@ export const api = {
     application: string
     incident: string
     evidence_index: string
-    applicant_name: string
+    applicant: Partial<Applicant>
   }): Promise<Blob> => {
     const res = await fetch(`${API_BASE}/api/documents/export`, {
       method: "POST",
