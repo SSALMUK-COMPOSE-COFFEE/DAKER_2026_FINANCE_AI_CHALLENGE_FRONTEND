@@ -16,26 +16,87 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-.font-serif-kr { font-family: var(--default-font-family); }
-.font-sans-kr  { font-family: var(--default-font-family); }
+.font-serif-kr {
+  font-family: var(--default-font-family);
+}
+.font-sans-kr {
+  font-family: var(--default-font-family);
+}
 
 @keyframes pulse-ring {
-  0%, 100% { opacity: 0.12; transform: scale(1); }
-  50%       { opacity: 0.28; transform: scale(1.15); }
+  0%,
+  100% {
+    opacity: 0.12;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.28;
+    transform: scale(1.15);
+  }
 }
 
 @keyframes dash-flow {
-  to { stroke-dashoffset: -24; }
+  to {
+    stroke-dashoffset: -24;
+  }
 }
 
 @keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.animate-pulse-ring { animation: pulse-ring 2.8s ease-in-out infinite; }
-.animate-dash       { animation: dash-flow 1.8s linear infinite; }
-.animate-fade-in-up { animation: fade-in-up 0.5s ease forwards; }
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes sparkle {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.9) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1) rotate(12deg);
+  }
+}
+
+.skeleton-line {
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    rgb(from var(--color-navy) r g b / 0.05) 0%,
+    rgb(from var(--color-blue) r g b / 0.16) 50%,
+    rgb(from var(--color-navy) r g b / 0.05) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+}
+
+.animate-sparkle {
+  animation: sparkle 1.6s ease-in-out infinite;
+}
+.animate-pulse-ring {
+  animation: pulse-ring 2.8s ease-in-out infinite;
+}
+.animate-dash {
+  animation: dash-flow 1.8s linear infinite;
+}
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease forwards;
+}
 
 .card {
   @apply bg-card rounded-xl border-[0.5px] border-border;
@@ -43,17 +104,28 @@ body {
 
 .btn-primary {
   @apply bg-blue text-white rounded-lg py-2.5 px-6 text-sm font-medium tracking-[0.01em] cursor-pointer border-none;
-  transition: background 0.15s ease, transform 0.1s ease;
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease;
 }
-.btn-primary:hover     { @apply -translate-y-px; background: #335f91; }
-.btn-primary:disabled  { @apply opacity-35 cursor-default translate-y-0; }
+.btn-primary:hover {
+  @apply -translate-y-px;
+  background: #335f91;
+}
+.btn-primary:disabled {
+  @apply opacity-35 cursor-default translate-y-0;
+}
 
 .btn-secondary {
   @apply bg-transparent text-navy border-[0.5px] border-navy/22 rounded-lg py-2.5 px-6 text-sm font-normal cursor-pointer;
-  transition: border-color 0.15s, background 0.15s;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
 }
 .btn-secondary:hover {
   @apply border-navy/42 bg-navy/3;
 }
 
-.step-section { animation: fade-in-up 0.4s ease both; }
+.step-section {
+  animation: fade-in-up 0.4s ease both;
+}

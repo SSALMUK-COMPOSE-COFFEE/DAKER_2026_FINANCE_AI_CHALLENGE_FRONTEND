@@ -1,27 +1,42 @@
-import { useState } from "react"
-import { ChevronDown, ShieldCheck } from "lucide-react"
-import type { Applicant } from "@/api"
+import { useState } from 'react';
+import { ChevronDown, ShieldCheck } from 'lucide-react';
+import type { Applicant } from '@/api';
 
 const FIELDS: {
-  key: keyof Applicant
-  label: string
-  placeholder: string
-  type?: string
-  wide?: boolean
+  key: keyof Applicant;
+  label: string;
+  placeholder: string;
+  type?: string;
+  wide?: boolean;
 }[] = [
-  { key: "name", label: "성명", placeholder: "홍길동" },
-  { key: "birth", label: "생년월일", placeholder: "1990. 01. 01." },
-  { key: "phone", label: "전화번호", placeholder: "010-0000-0000", type: "tel" },
-  { key: "email", label: "전자우편주소", placeholder: "hong@example.com", type: "email" },
-  { key: "address", label: "주소", placeholder: "서울특별시 ○○구 ○○로 00", wide: true },
-  { key: "bank", label: "금융회사", placeholder: "○○은행" },
-  { key: "branch", label: "개설점포", placeholder: "○○지점" },
-  { key: "account_type", label: "예금종별", placeholder: "입출금통장" },
-  { key: "account_no", label: "계좌번호", placeholder: "123-456-789012" },
-]
+  { key: 'name', label: '성명', placeholder: '홍길동' },
+  { key: 'birth', label: '생년월일', placeholder: '1990. 01. 01.' },
+  {
+    key: 'phone',
+    label: '전화번호',
+    placeholder: '010-0000-0000',
+    type: 'tel',
+  },
+  {
+    key: 'email',
+    label: '전자우편주소',
+    placeholder: 'hong@example.com',
+    type: 'email',
+  },
+  {
+    key: 'address',
+    label: '주소',
+    placeholder: '서울특별시 ○○구 ○○로 00',
+    wide: true,
+  },
+  { key: 'bank', label: '금융회사', placeholder: '○○은행' },
+  { key: 'branch', label: '개설점포', placeholder: '○○지점' },
+  { key: 'account_type', label: '예금종별', placeholder: '입출금통장' },
+  { key: 'account_no', label: '계좌번호', placeholder: '123-456-789012' },
+];
 
 const INPUT =
-  "w-full py-2.5 px-3 border-[0.5px] border-border rounded-[10px] text-[13px] text-navy outline-none bg-white box-border focus:border-blue/50"
+  'w-full py-2.5 px-3 border-[0.5px] border-border rounded-[10px] text-[13px] text-navy outline-none bg-white box-border focus:border-blue/50';
 
 export function ApplicantForm({
   value,
@@ -29,15 +44,15 @@ export function ApplicantForm({
   onRedraft,
   redrafting,
 }: {
-  value: Applicant
-  onChange: (next: Applicant) => void
-  onRedraft: () => void
-  redrafting: boolean
+  value: Applicant;
+  onChange: (next: Applicant) => void;
+  onRedraft: () => void;
+  redrafting: boolean;
 }) {
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false);
   const filled = Object.entries(value).filter(
-    ([k, v]) => k !== "account_type" && v.trim(),
-  ).length
+    ([k, v]) => k !== 'account_type' && v.trim(),
+  ).length;
 
   return (
     <div className="card py-3.5 px-4">
@@ -52,12 +67,12 @@ export function ApplicantForm({
             신청인 정보 (선택)
           </span>
           <span className="text-[10.5px] text-navy/40">
-            {filled ? `${filled}개 입력` : "입력하지 않아도 됩니다"}
+            {filled ? `${filled}개 입력` : '입력하지 않아도 됩니다'}
           </span>
         </div>
         <ChevronDown
           size={14}
-          className={`text-navy/40 transition-transform ${open ? "rotate-180" : ""}`}
+          className={`text-navy/40 transition-transform ${open ? 'rotate-180' : ''}`}
         />
       </button>
 
@@ -72,13 +87,13 @@ export function ApplicantForm({
             {FIELDS.map((f) => (
               <label
                 key={f.key}
-                className={`block ${f.wide ? "sm:col-span-2" : ""}`}
+                className={`block ${f.wide ? 'sm:col-span-2' : ''}`}
               >
                 <span className="block text-[10.5px] text-navy/50 mb-1">
                   {f.label}
                 </span>
                 <input
-                  type={f.type ?? "text"}
+                  type={f.type ?? 'text'}
                   value={value[f.key]}
                   placeholder={f.placeholder}
                   autoComplete="off"
@@ -101,11 +116,11 @@ export function ApplicantForm({
               onClick={onRedraft}
               disabled={redrafting}
             >
-              {redrafting ? "생성 중…" : "이 정보로 초안 다시 생성"}
+              {redrafting ? '생성 중…' : '이 정보로 초안 다시 생성'}
             </button>
           </div>
         </div>
       )}
     </div>
-  )
+  );
 }

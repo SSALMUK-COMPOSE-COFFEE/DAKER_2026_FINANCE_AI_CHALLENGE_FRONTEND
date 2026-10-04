@@ -10,7 +10,13 @@ import { AnalysisResult } from '@/screens/AnalysisResult';
 import { DocumentEditor } from '@/screens/DocumentEditor';
 import { SubmissionSupport } from '@/screens/SubmissionSupport';
 import type { Answers } from '@/types';
-import type { AnalysisResponse, Applicant, DocKey, ImageExtract, Transaction } from '@/api';
+import type {
+  AnalysisResponse,
+  Applicant,
+  DocKey,
+  ImageExtract,
+  Transaction,
+} from '@/api';
 import { EMPTY_APPLICANT } from '@/api';
 
 export default function App() {
