@@ -41,6 +41,10 @@ const TODAY_ISO = [
   String(REFERENCE_TODAY.getDate()).padStart(2, '0'),
 ].join('-');
 
+// 금액 입력란 표시용 — 저장값은 숫자만 유지
+const withComma = (v?: string) =>
+  v ? v.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+
 export function DiagnosisQuestionnaire({
   onBack,
   onNext,
@@ -251,7 +255,9 @@ export function DiagnosisQuestionnaire({
             onClick={() => void loadSampleStory()}
             disabled={parsing || loadingSample}
           >
-            {loadingSample ? '불러오는 중…' : '데모용 · 샘플 글 넣기 (중고 노트북 판매 사례)'}
+            {loadingSample
+              ? '불러오는 중…'
+              : '데모용 · 샘플 글 넣기 (중고 노트북 판매 사례)'}
           </button>
         </div>
         <div className="flex flex-wrap items-center gap-3">
@@ -988,7 +994,9 @@ export function DiagnosisQuestionnaire({
               type="date"
               value={(ans[q.id] as string) ?? ''}
               onChange={(e) => set(q.id, e.target.value)}
-              min={q.id === 'q9' ? (ans.q7_date as string) || undefined : undefined}
+              min={
+                q.id === 'q9' ? (ans.q7_date as string) || undefined : undefined
+              }
               max={TODAY_ISO}
               className="py-3 px-3.5 border-[0.5px] border-border rounded-[10px] text-sm text-navy outline-none bg-white w-full box-border focus:border-blue/50"
             />
@@ -1053,8 +1061,8 @@ export function DiagnosisQuestionnaire({
               </div>
               <input
                 inputMode="numeric"
-                placeholder="3500000"
-                value={(ans.q7_amount as string) ?? ''}
+                placeholder="3,500,000"
+                value={withComma(ans.q7_amount as string)}
                 onChange={(e) =>
                   set('q7_amount', e.target.value.replace(/[^0-9]/g, ''))
                 }
@@ -1089,7 +1097,7 @@ export function DiagnosisQuestionnaire({
               <input
                 inputMode="numeric"
                 placeholder="원"
-                value={(ans.q7_dealAmount as string) ?? ''}
+                value={withComma(ans.q7_dealAmount as string)}
                 onChange={(e) =>
                   set('q7_dealAmount', e.target.value.replace(/[^0-9]/g, ''))
                 }
@@ -1103,7 +1111,7 @@ export function DiagnosisQuestionnaire({
               <input
                 inputMode="numeric"
                 placeholder="원"
-                value={(ans.q7_noticeAmount as string) ?? ''}
+                value={withComma(ans.q7_noticeAmount as string)}
                 onChange={(e) =>
                   set('q7_noticeAmount', e.target.value.replace(/[^0-9]/g, ''))
                 }
@@ -1117,7 +1125,7 @@ export function DiagnosisQuestionnaire({
               <input
                 inputMode="numeric"
                 placeholder="원"
-                value={(ans.q7_balance as string) ?? ''}
+                value={withComma(ans.q7_balance as string)}
                 onChange={(e) =>
                   set('q7_balance', e.target.value.replace(/[^0-9]/g, ''))
                 }
@@ -1130,8 +1138,11 @@ export function DiagnosisQuestionnaire({
             ans.q7_noticeAmount &&
             ans.q7_dealAmount !== ans.q7_noticeAmount && (
               <div className="bg-warm/6 border-[0.5px] border-warm/25 rounded-lg py-3 px-4 mb-4 text-[12px] text-navy/65 leading-[1.6]">
-                거래금액과 공고금액이 다릅니다. 청구액은 더 작은 쪽(공고금액)을
-                기준으로 삼아야 초과분이 기각되는 것을 피할 수 있습니다.
+                거래금액과 공고금액이 다릅니다. 청구액은 더 작은 쪽(
+                {Number(ans.q7_dealAmount) < Number(ans.q7_noticeAmount)
+                  ? `거래금액 ${withComma(ans.q7_dealAmount as string)}원`
+                  : `공고금액 ${withComma(ans.q7_noticeAmount as string)}원`}
+                )을 기준으로 삼아야 초과분이 기각되는 것을 피할 수 있습니다.
               </div>
             )}
 
