@@ -22,8 +22,9 @@ export const QUESTIONS: Question[] = [
   },
   {
     id: "q2",
-    tag: "Q2 · 자금 출처",
-    question: "그 돈이 왜 들어왔다고 생각하셨나요?",
+    tag: "Q2 · 문제가 된 입금",
+    question: "계좌 정지 직전에 받은 그 입금은 어떤 돈이었나요?",
+    note: "보통 누군가 보낸 돈이 사기 피해금으로 신고되면 계좌가 정지됩니다.",
     type: "single",
     options: [
       { value: "판매대금", label: "물건이나 서비스를 팔고 받은 대금입니다" },
