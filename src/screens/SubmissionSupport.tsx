@@ -36,10 +36,12 @@ export function SubmissionSupport({
   docs,
   applicant,
   onBack,
+  onDone,
 }: {
   docs: Record<DocKey, string> | null
   applicant: Applicant
   onBack: () => void
+  onDone: () => void
 }) {
   const applicantName = applicant.name
   const [checked, setChecked] = useState<Record<string, boolean>>({})
@@ -260,9 +262,24 @@ export function SubmissionSupport({
         확인하시면 됩니다.
       </div>
 
-      <button className="btn-secondary" onClick={onBack}>
-        ← 이전
-      </button>
+      <div className="flex gap-2.5">
+        <button className="btn-secondary" onClick={onBack}>
+          ← 이전
+        </button>
+        <button
+          className="btn-primary"
+          onClick={() => {
+            if (
+              window.confirm(
+                "작성한 내용이 모두 지워지고 처음 화면으로 돌아갑니다. PDF를 내려받으셨나요?",
+              )
+            )
+              onDone()
+          }}
+        >
+          완료
+        </button>
+      </div>
     </div>
   )
 }

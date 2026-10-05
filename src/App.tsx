@@ -35,6 +35,21 @@ export default function App() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const mainRef = useRef<HTMLElement>(null);
 
+  // 완료 — 작성한 자료를 모두 비우고 홈으로
+  const resetAll = () => {
+    setAnswers({});
+    setSampleMode(false);
+    setDday(null);
+    setTransactions([]);
+    setImageNotes([]);
+    setCheckedEvidence([]);
+    setMemo('');
+    setAnalysis(null);
+    setDocs(null);
+    setApplicant(EMPTY_APPLICANT);
+    setStep(0);
+  };
+
   useEffect(() => {
     mainRef.current?.scrollTo(0, 0);
   }, [step]);
@@ -117,6 +132,7 @@ export default function App() {
             docs={docs}
             applicant={applicant}
             onBack={() => setStep(4)}
+            onDone={resetAll}
           />
         )}
       </main>
