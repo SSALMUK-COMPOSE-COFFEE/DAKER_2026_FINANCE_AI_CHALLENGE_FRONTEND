@@ -29,6 +29,7 @@ export default function App() {
   const [imageNotes, setImageNotes] = useState<ImageExtract[]>([]);
   const [checkedEvidence, setCheckedEvidence] = useState<string[]>([]);
   const [memo, setMemo] = useState('');
+  const [story, setStory] = useState('');
   const [analysis, setAnalysis] = useState<AnalysisResponse | null>(null);
   const [docs, setDocs] = useState<Record<DocKey, string> | null>(null);
   const [applicant, setApplicant] = useState<Applicant>(EMPTY_APPLICANT);
@@ -90,6 +91,7 @@ export default function App() {
             onDdayChange={setDday}
             onAnswersChange={setAnswers}
             onSampleMode={setSampleMode}
+            onStoryChange={setStory}
           />
         )}
         {step === 2 && (
@@ -119,6 +121,7 @@ export default function App() {
             analysis={analysis}
             checkedEvidence={checkedEvidence}
             memo={memo}
+            story={story}
             imageNotes={imageNotes}
             applicant={applicant}
             onApplicantChange={setApplicant}

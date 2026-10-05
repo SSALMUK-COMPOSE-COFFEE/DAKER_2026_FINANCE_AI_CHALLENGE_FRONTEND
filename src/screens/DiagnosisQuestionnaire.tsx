@@ -51,12 +51,14 @@ export function DiagnosisQuestionnaire({
   onDdayChange,
   onAnswersChange,
   onSampleMode,
+  onStoryChange,
 }: {
   onBack: () => void;
   onNext: () => void;
   onDdayChange: (d: number | null) => void;
   onAnswersChange: (a: Answers) => void;
   onSampleMode: (on: boolean) => void;
+  onStoryChange: (story: string) => void;
 }) {
   const [screen, setScreen] = useState<Screen>('intro');
   const [returnTo, setReturnTo] = useState<Screen>('intro');
@@ -93,6 +95,7 @@ export function DiagnosisQuestionnaire({
 
   const submitIntake = async () => {
     const text = freeText.trim();
+    onStoryChange(text);
     if (!text) {
       setScreen(0);
       return;

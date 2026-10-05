@@ -117,6 +117,7 @@ export function DocumentEditor({
   analysis,
   checkedEvidence,
   memo,
+  story,
   imageNotes,
   applicant,
   onApplicantChange,
@@ -128,6 +129,7 @@ export function DocumentEditor({
   analysis: AnalysisResponse | null;
   checkedEvidence: string[];
   memo: string;
+  story: string;
   imageNotes: ImageExtract[];
   applicant: Applicant;
   onApplicantChange: (next: Applicant) => void;
@@ -160,6 +162,7 @@ export function DocumentEditor({
         analysis,
         checked_evidence: checkedEvidence,
         memo,
+        story,
         applicant: ap,
         image_notes: imageNotes,
       });

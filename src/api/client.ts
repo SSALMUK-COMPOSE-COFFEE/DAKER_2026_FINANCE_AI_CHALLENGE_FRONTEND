@@ -82,6 +82,7 @@ export const api = {
     analysis: AnalysisResponse | null
     checked_evidence: string[]
     memo: string
+    story: string
     applicant: Partial<Applicant>
     image_notes: ImageExtract[]
   }) => post<DocumentDraftResponse>("/documents/draft", payload),
