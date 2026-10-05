@@ -10,23 +10,18 @@ export function Wordmark({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   const s = SIZE_CLASSES[size]
   return (
     <div className="flex items-center gap-2">
-      <svg className={s.mark} viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="10" r="5" stroke={COLORS.blue} strokeWidth="1.5" />
+      <svg className={s.mark} viewBox="0 0 64 64" fill="none">
+        {/* 열린 자물쇠 — 묶인 계좌가 "풀림" (public/favicon.svg와 동일) */}
+        <rect width="64" height="64" rx="16" fill={COLORS.blue} />
         <path
-          d="M9 10 Q9 15 12 18 Q15 15 15 10"
-          stroke={COLORS.blue}
-          strokeWidth="1.5"
-          fill="none"
+          d="M23 31 V21 a9 9 0 0 1 18 0 V23"
+          stroke="#ffffff"
+          strokeWidth="5"
           strokeLinecap="round"
         />
-        <path
-          d="M15 10 Q18 10 18 13"
-          stroke={COLORS.blue}
-          strokeWidth="1.5"
-          fill="none"
-          strokeLinecap="round"
-          strokeDasharray="2 2"
-        />
+        <rect x="16" y="29" width="32" height="23" rx="7" fill="#ffffff" />
+        <circle cx="32" cy="38.5" r="3.4" fill={COLORS.blue} />
+        <rect x="30.6" y="39" width="2.8" height="7" rx="1.4" fill={COLORS.blue} />
       </svg>
       <div>
         <div
