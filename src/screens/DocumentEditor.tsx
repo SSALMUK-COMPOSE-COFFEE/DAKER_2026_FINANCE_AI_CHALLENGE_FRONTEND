@@ -146,9 +146,6 @@ export function DocumentEditor({
   const [rewriting, setRewriting] = useState(false);
   const [rewriteError, setRewriteError] = useState<string | null>(null);
 
-  const [exporting, setExporting] = useState(false);
-  const [exportError, setExportError] = useState<string | null>(null);
-
   const checklist = getEvidenceChecklist(answers);
   useEffect(() => {
     onDocsChange(docs);
@@ -219,28 +216,6 @@ export function DocumentEditor({
     }
   };
 
-  const runExport = async () => {
-    setExporting(true);
-    setExportError(null);
-    try {
-      const blob = await api.exportPdf({
-        application: docs.application,
-        incident: docs.incident,
-        evidence_index: docs.evidence,
-        applicant,
-      });
-      const url = URL.createObjectURL(blob);
-      window.open(url, '_blank', 'noopener');
-      setTimeout(() => URL.revokeObjectURL(url), 60000);
-    } catch (err) {
-      setExportError(
-        err instanceof Error ? err.message : 'PDF 생성에 실패했습니다.',
-      );
-    } finally {
-      setExporting(false);
-    }
-  };
-
   const badge = drafting
     ? '초안 생성 중…'
     : source === 'llm'
@@ -265,13 +240,6 @@ export function DocumentEditor({
             소명서 초안 편집
           </h1>
           <div className="flex gap-2">
-            <button
-              className="btn-secondary text-[13px]"
-              onClick={runExport}
-              disabled={exporting || drafting}
-            >
-              {exporting ? 'PDF 생성 중…' : 'PDF 내려받기'}
-            </button>
             <button
               className="btn-primary text-[13px]"
               onClick={onNext}
@@ -299,11 +267,6 @@ export function DocumentEditor({
           <div className="mt-3 bg-warm/6 border-[0.5px] border-warm/25 rounded-lg py-2.5 px-3.5 text-[11.5px] text-navy/65 leading-[1.6]">
             초안 서버에 연결하지 못했습니다 ({draftError}). 표준 서식 초안을
             대신 띄웠습니다.
-          </div>
-        )}
-        {exportError && (
-          <div className="mt-3 bg-warm/6 border-[0.5px] border-warm/25 rounded-lg py-2.5 px-3.5 text-[11.5px] text-navy/65">
-            {exportError}
           </div>
         )}
       </div>
