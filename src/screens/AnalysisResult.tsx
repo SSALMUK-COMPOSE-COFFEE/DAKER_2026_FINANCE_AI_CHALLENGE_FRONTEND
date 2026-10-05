@@ -60,7 +60,6 @@ export function AnalysisResult({
   const nameMismatch = answers.q6 === "다름"
   const dealAmount = Number(answers.q7_dealAmount ?? 0)
   const noticeAmount = Number(answers.q7_noticeAmount ?? 0)
-  const balance = Number(answers.q7_balance ?? 0)
   const amountsMismatch =
     dealAmount > 0 && noticeAmount > 0 && dealAmount !== noticeAmount
 
@@ -107,27 +106,21 @@ export function AnalysisResult({
             금액 정합성 확인 필요
           </div>
           <div className="text-[11.5px] text-navy/60 leading-[1.6] mb-2">
-            거래금액과 공고금액이 일치하지 않습니다. 환급 청구 상한은 "공고되어
-            소멸된 채권액" 기준이므로, 청구액을 자동으로 상한선에 맞춰
+            약속한 거래금액과 피해 신고된 금액이 일치하지 않습니다. 환급 청구 상한은 "피해 신고되어
+            정지된 금액" 기준이므로, 청구액을 자동으로 상한선에 맞춰
             두었습니다.
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-center">
             <div className="bg-white rounded-lg py-2 px-2 border-[0.5px] border-warm/20">
-              <div className="text-[10px] text-navy/45 mb-1">거래금액</div>
+              <div className="text-[10px] text-navy/45 mb-1">약속한 거래금액</div>
               <div className="text-[12.5px] font-semibold text-navy">
                 {dealAmount.toLocaleString()}원
               </div>
             </div>
             <div className="bg-white rounded-lg py-2 px-2 border-[0.5px] border-warm/20">
-              <div className="text-[10px] text-navy/45 mb-1">공고금액</div>
+              <div className="text-[10px] text-navy/45 mb-1">피해 신고된 금액</div>
               <div className="text-[12.5px] font-semibold text-warm">
                 {noticeAmount.toLocaleString()}원
-              </div>
-            </div>
-            <div className="bg-white rounded-lg py-2 px-2 border-[0.5px] border-warm/20">
-              <div className="text-[10px] text-navy/45 mb-1">계좌잔액</div>
-              <div className="text-[12.5px] font-semibold text-navy">
-                {balance.toLocaleString()}원
               </div>
             </div>
           </div>

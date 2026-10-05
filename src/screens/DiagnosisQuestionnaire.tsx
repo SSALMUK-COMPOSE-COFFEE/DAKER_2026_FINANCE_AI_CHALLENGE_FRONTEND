@@ -212,8 +212,7 @@ export function DiagnosisQuestionnaire({
         !!ans.q7_date &&
         !!ans.q7_amount &&
         !!ans.q7_dealAmount &&
-        !!ans.q7_noticeAmount &&
-        !!ans.q7_balance
+        !!ans.q7_noticeAmount
       );
     }
     if (q.type === 'multi')
@@ -665,10 +664,10 @@ export function DiagnosisQuestionnaire({
               금액 불일치 확인됨
             </div>
             <div className="text-[11.5px] text-navy/60 leading-[1.6]">
-              거래금액({dealAmount.toLocaleString()}원)과 공고금액(
+              약속한 거래금액({dealAmount.toLocaleString()}원)과 피해 신고된 금액(
               {noticeAmount.toLocaleString()}원)이 다릅니다. 환급 청구의 상한은
-              "받은 돈"이 아니라 "공고되어 소멸된 채권액"이므로, 청구액을
-              공고금액 이하로 맞춰야 초과분 기각을 피할 수 있습니다.
+              "받은 돈"이 아니라 "피해 신고되어 정지된 금액"이므로, 청구액을
+              피해 신고된 금액 이하로 맞춰야 초과분 기각을 피할 수 있습니다.
             </div>
           </div>
         )}
@@ -1083,16 +1082,16 @@ export function DiagnosisQuestionnaire({
           </div>
 
           <div className="text-xs font-semibold text-navy mb-2 mt-6">
-            아래 세 금액을 각각 입력해 주세요
+            아래 두 금액을 각각 입력해 주세요
           </div>
           <p className="text-[11.5px] text-navy/50 leading-[1.6] mb-3">
-            환급청구의 상한은 "내가 받은 돈"이 아니라 "공고되어 소멸된
-            채권액"입니다. 세 값이 다르면 여기서 바로 알려드립니다.
+            환급청구의 상한은 "내가 받은 돈"이 아니라 "피해 신고되어 정지된
+            금액"입니다. 두 값이 다르면 여기서 바로 알려드립니다.
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-2">
             <div>
               <div className="text-[11px] font-semibold text-navy/50 mb-2">
-                거래금액
+                약속한 거래금액
               </div>
               <input
                 inputMode="numeric"
@@ -1106,7 +1105,7 @@ export function DiagnosisQuestionnaire({
             </div>
             <div>
               <div className="text-[11px] font-semibold text-navy/50 mb-2">
-                공고금액
+                피해 신고된 금액
               </div>
               <input
                 inputMode="numeric"
@@ -1118,30 +1117,16 @@ export function DiagnosisQuestionnaire({
                 className="w-full py-3 px-3 border-[0.5px] border-border rounded-[10px] text-[13px] text-navy outline-none bg-white box-border focus:border-blue/50"
               />
             </div>
-            <div>
-              <div className="text-[11px] font-semibold text-navy/50 mb-2">
-                계좌잔액
-              </div>
-              <input
-                inputMode="numeric"
-                placeholder="원"
-                value={withComma(ans.q7_balance as string)}
-                onChange={(e) =>
-                  set('q7_balance', e.target.value.replace(/[^0-9]/g, ''))
-                }
-                className="w-full py-3 px-3 border-[0.5px] border-border rounded-[10px] text-[13px] text-navy outline-none bg-white box-border focus:border-blue/50"
-              />
-            </div>
           </div>
 
           {ans.q7_dealAmount &&
             ans.q7_noticeAmount &&
             ans.q7_dealAmount !== ans.q7_noticeAmount && (
               <div className="bg-warm/6 border-[0.5px] border-warm/25 rounded-lg py-3 px-4 mb-4 text-[12px] text-navy/65 leading-[1.6]">
-                거래금액과 공고금액이 다릅니다. 청구액은 더 작은 쪽(
+                약속한 거래금액과 피해 신고된 금액이 다릅니다. 청구액은 더 작은 쪽(
                 {Number(ans.q7_dealAmount) < Number(ans.q7_noticeAmount)
-                  ? `거래금액 ${withComma(ans.q7_dealAmount as string)}원`
-                  : `공고금액 ${withComma(ans.q7_noticeAmount as string)}원`}
+                  ? `약속한 거래금액 ${withComma(ans.q7_dealAmount as string)}원`
+                  : `피해 신고된 금액 ${withComma(ans.q7_noticeAmount as string)}원`}
                 )을 기준으로 삼아야 초과분이 기각되는 것을 피할 수 있습니다.
               </div>
             )}
