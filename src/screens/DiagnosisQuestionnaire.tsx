@@ -286,7 +286,10 @@ export function DiagnosisQuestionnaire({
           </button>
           <button
             className="text-[13px] text-navy/45 bg-transparent border-none cursor-pointer"
-            onClick={() => setScreen(0)}
+            onClick={() => {
+              onStoryChange('');
+              setScreen(0);
+            }}
             disabled={parsing}
           >
             건너뛰기

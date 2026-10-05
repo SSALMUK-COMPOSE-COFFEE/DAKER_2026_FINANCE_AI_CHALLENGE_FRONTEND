@@ -45,6 +45,7 @@ export default function App() {
     setImageNotes([]);
     setCheckedEvidence([]);
     setMemo('');
+    setStory('');
     setAnalysis(null);
     setDocs(null);
     setApplicant(EMPTY_APPLICANT);
