@@ -109,7 +109,8 @@ export function DiagnosisQuestionnaire({
     setIntakeError(null);
     try {
       const res = await api.parseIntake(text);
-      setAns((prev) => ({ ...res.answers, ...prev }));
+      // 글을 다시 쓰면 이전 답변은 버리고 새로 분석한 결과로 채움
+      setAns(res.answers);
       setIntakeSummary(res.summary);
     } catch (err) {
       setIntakeError(
