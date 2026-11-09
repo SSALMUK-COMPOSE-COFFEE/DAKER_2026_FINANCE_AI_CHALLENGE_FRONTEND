@@ -1,10 +1,31 @@
+<div align="center">
+
+<img src="docs/og-image.png" alt="풀림 PULL-LIM — 묶인 계좌, 근거로 풀립니다" width="100%" />
+
 # 🔓 풀림 (PULL-LIM)
 
 **묶인 계좌, 근거로 풀립니다.**
 
+[![Live](https://img.shields.io/badge/🌐_배포_사이트-pullim.hajin.xyz-1F5EF0?style=for-the-badge)](https://pullim.hajin.xyz/)
+[![Demo](https://img.shields.io/badge/▶_시연_영상-YouTube-FF0000?style=for-the-badge)](https://www.youtube.com/watch?v=QK7-RnFDg1I)
+
+`2026 금융 AI Challenge` · 팀 **DNDN** (김주현, 권하진, 채수지)
+
+</div>
+
+---
+
 보이스피싱(전기통신금융사기) 피해의 여파로 계좌가 부당하게 지급정지된 사람이, 거래 내역과 대화 캡처를 근거로 은행에 제출할 **소명서(이의제기신청서)**를 AI와 함께 작성할 수 있도록 돕는 서비스입니다.
 
 React + Vite + Tailwind CSS로 만든 프론트엔드이며, 자유 서술 분류·이미지 판독·소명서 생성 등 AI 관련 기능은 별도 백엔드 API와 연동해 동작합니다.
+
+## 🎬 시연 영상
+
+<a href="https://www.youtube.com/watch?v=QK7-RnFDg1I">
+  <img src="https://img.youtube.com/vi/QK7-RnFDg1I/maxresdefault.jpg" alt="풀림 시연 영상" width="100%" />
+</a>
+
+> 이미지를 클릭하면 YouTube에서 시연 영상을 볼 수 있어요. 직접 써보려면 👉 **[pullim.hajin.xyz](https://pullim.hajin.xyz/)**
 
 ## 🎯 누구를 위한 서비스인가
 
